@@ -1,6 +1,6 @@
 -- Passo 7 — Modelo físico
--- Equipe: Sara dos Santos de Oliveira
--- PostgreSQL. Por que este SGBD:
+-- Equipe: Sara dos Santos de Oliveira, Rodrygo Schadeck Gomes, Yasmin Santos de Lima, Isabella de Almeida Santos
+-- PostgreSQL. Por que este SGBD: A escolha do PostgreSQL justifica-se pelo domínio técnico que a equipe já possui sobre a tecnologia e pela sua utilização prática nas disciplinas da faculdade durante o semestre atual dos integrantes do projeto.
 -- Contrato com Aplicativos para Web: os nomes abaixo são os acordados.
 -- Banco vazio:
 --   createdb projeto_quiz_irsy
