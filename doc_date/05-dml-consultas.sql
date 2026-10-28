@@ -44,35 +44,89 @@ INSERT INTO questoes (id, Enunciado, opcao_id, Resposta_correta, dificuldade_niv
 ('fact-006', 'A ausência de intertravas mecânicas de segurança foi um fator determinante para a gravidade dos acidentes do Therac-25?', 6, 'Certo', 'facil', 3);
 COMMIT;
 
--- RA01. Categorias em ordem alfabética, com a quantidade de perguntas.
--- Resultado:
--- TODO
+-- RA01. Dificuldades (categorias) em ordem alfabética, com a quantidade de perguntas.
+SELECT dificuldade_nivel AS categoria, COUNT(id) AS total_perguntas
+FROM questoes
+GROUP BY dificuldade_nivel
+ORDER BY dificuldade_nivel ASC;
 
--- RA02a. Uma pergunta aleatória, de qualquer categoria.
--- Resultado (id sorteado):
--- TODO
 
--- RA02b. Uma pergunta aleatória de uma categoria recebida por parâmetro.
--- Resultado:
--- TODO
+-- RA02a. Uma pergunta aleatória, de qualquer dificuldade.
+SELECT id, Enunciado, dificuldade_nivel
+FROM questoes
+ORDER BY RANDOM()
+LIMIT 1;
 
--- RA03. Título, enunciado e alternativas de uma pergunta.
--- Resultado:
--- TODO
+
+-- RA02b. Uma pergunta aleatória de uma dificuldade recebida por parâmetro.
+-- Substitua 'facil' pelo nível desejado ('facil', 'medio', 'dificil').
+SELECT id, Enunciado, dificuldade_nivel
+FROM questoes
+WHERE dificuldade_nivel = 'facil'
+ORDER BY RANDOM()
+LIMIT 1;
+
+
+-- RA03. Título (ID), enunciado e alternativas de uma pergunta.
+-- Substitua 'fact-001' pela questão desejada.
+SELECT 
+    q.id AS id_pergunta, 
+    q.Enunciado, 
+    o.Opcao_a, 
+    o.Opcao_b, 
+    o.Opcao_c, 
+    o.Opcao_d, 
+    o.Opcao_e
+FROM questoes q
+JOIN opcao_questoes o ON q.opcao_id = o.id_opcao
+WHERE q.id = 'fact-001';
+
 
 -- RA04. Dada a pergunta e a alternativa escolhida, se acertou.
--- Provem com a alternativa correta e com a errada.
--- Resultado:
--- TODO
+-- Prova com a alternativa correta e com a errada para a questão 'fact-001':
 
--- RA05. Explicação e fonte: título, publicador, URL e idioma.
--- Resultado:
--- TODO
+-- Teste com a alternativa CORRETA (para 'fact-001', a resposta correta é 'B'):
+SELECT 
+    'fact-001' AS questao,
+    'B' AS alternativa_escolhida,
+    CASE WHEN 'B' = Resposta_correta THEN 'Acertou' ELSE 'Errou' END AS resultado
+FROM questoes WHERE id = 'fact-001';
 
--- RA06. Publicadores mais citados, com o número de perguntas.
--- Resultado:
--- TODO
+-- Teste com a alternativa ERRADA:
+SELECT 
+    'fact-001' AS questao,
+    'A' AS alternativa_escolhida,
+    CASE WHEN 'A' = Resposta_correta THEN 'Acertou' ELSE 'Errou' END AS resultado
+FROM questoes WHERE id = 'fact-001';
+
+
+-- RA05. Explicação e fonte: referência da fonte da questão.
+SELECT 
+    q.id AS questao,
+    f.referencia AS fonte_referencia
+FROM questoes q
+JOIN fontes f ON q.fonte_id = f.id
+WHERE q.id = 'fact-001';
+
+
+-- RA06. Como não há publicadores, listamos as fontes mais citadas com o número de perguntas.
+SELECT 
+    f.id AS fonte_id,
+    f.referencia, 
+    COUNT(q.id) AS total_perguntas
+FROM fontes f
+JOIN questoes q ON f.id = q.fonte_id
+GROUP BY f.id, f.referencia
+ORDER BY total_perguntas DESC;
+
 
 -- RA07. Fontes citadas por mais de uma pergunta.
--- Resultado:
--- TODO
+SELECT 
+    f.id AS fonte_id,
+    f.referencia, 
+    COUNT(q.id) AS quantidade_perguntas
+FROM fontes f
+JOIN questoes q ON f.id = q.fonte_id
+GROUP BY f.id, f.referencia
+HAVING COUNT(q.id) > 1
+ORDER BY quantidade_perguntas DESC;
