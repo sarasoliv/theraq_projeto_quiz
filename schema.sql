@@ -2,7 +2,7 @@
 CREATE DATABASE projeto_quiz_IMRSY;
 
 create table Cadastro_usuario(
-	id_usuario PRIMARY KEY NOT NULL,
+	id_usuario Serial PRIMARY KEY,
 	nome		varchar(50) not null
 );
 
