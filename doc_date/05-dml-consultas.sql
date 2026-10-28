@@ -42,6 +42,7 @@ INSERT INTO questoes (id, Enunciado, opcao_id, Resposta_correta, dificuldade_niv
 ('fact-004', 'Quantos acidentes de sobredosagem massiva de radiação foram oficialmente confirmados pelo estudo de Leveson?', 4, 'C', 'medio', 1),
 ('fact-005', 'O projeto original do software do Therac-25 priorizou adequadamente a sincronização multithreading desde o início?', 5, 'Errado', 'medio', 2),
 ('fact-006', 'A ausência de intertravas mecânicas de segurança foi um fator determinante para a gravidade dos acidentes do Therac-25?', 6, 'Certo', 'facil', 3);
+
 COMMIT;
 
 -- RA01. Dificuldades (categorias) em ordem alfabética, com a quantidade de perguntas.
