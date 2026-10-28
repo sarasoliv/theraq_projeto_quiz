@@ -2,6 +2,13 @@
 -- Equipe: Sara dos Santos de Oliveira, Rodrygo Schadeck Gomes, Yasmin Santos de Lima, Isabella de Almeida Santos
 -- PostgreSQL. Por que este SGBD: A escolha do PostgreSQL justifica-se pelo domínio técnico que a equipe já possui sobre a tecnologia e pela sua utilização prática nas disciplinas da faculdade durante o semestre atual dos integrantes do projeto.
 -- Contrato com Aplicativos para Web: os nomes abaixo são os acordados.
+-- Tabelas e colunas oficiais:
+-- - cadastro_usuario (id_usuario, nome)
+-- - tabela_ranking (id_jogador, nome_jogador, pontuacao_jogador, data_jogado)
+-- - opcao_questoes (id_opcao, opcao_a, opcao_b, opcao_c, opcao_d, opcao_e)
+-- - fontes (id, referencia)
+-- - questoes (id, enunciado, opcao_id, resposta_correta, dificuldade_nivel, fonte_id)
+-- - questoes_respondidas (id_resposta, usuario_id, questao_id, resposta_usuario, acerto, data_resposta)
 -- Banco vazio:
 --   createdb projeto_quiz_irsy
 --   psql -d projeto_quiz_IMRSY -v ON_ERROR_STOP=1 -f 04-ddl.sql
