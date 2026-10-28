@@ -193,3 +193,47 @@ server.listen(port, () => {
     console.warn("GROQ_API_KEY não configurada. O site usará as perguntas locais.");
   }
 });
+// Variável global para armazenar as perguntas que vieram do banco
+let listaDePerguntas = [];
+let perguntaAtualIndex = 0;
+
+async function carregarQuizDoBanco() {
+  try {
+    // Faz a requisição para a rota da API que criamos na Vercel
+    const resposta = await fetch('/api/perguntas');
+    
+    if (!resposta.ok) {
+      throw new Error('Falha ao buscar perguntas do servidor.');
+    }
+
+    listaDePerguntas = await resposta.json();
+    
+    console.log("Perguntas carregadas com sucesso:", listaDePerguntas);
+
+    // Se houver perguntas, inicia o quiz na tela
+    if (listaDePerguntas.length > 0) {
+      mostrarPerguntaAtual();
+    } else {
+      alert("Nenhuma pergunta encontrada no banco de dados.");
+    }
+
+  } catch (erro) {
+    console.error("Erro:", erro);
+    alert("Não foi possível carregar o quiz.");
+  }
+}
+
+function mostrarPerguntaAtual() {
+  const pergunta = listaDePerguntas[perguntaAtualIndex];
+  
+  // Exemplo: preenchendo os elementos HTML da sua tela
+  // Certifique-se de que os IDs abaixo correspondem ao seu HTML (ex: <h2 id="enunciado"></h2>)
+  document.getElementById('enunciado').innerText = pergunta.enunciado;
+  document.getElementById('btn-a').innerText = pergunta.opcao_a;
+  document.getElementById('btn-b').innerText = pergunta.opcao_b;
+  document.getElementById('btn-c').innerText = pergunta.opcao_c;
+  document.getElementById('btn-d').innerText = pergunta.opcao_d;
+}
+
+// Executa a função assim que a página é totalmente carregada
+window.onload = carregarQuizDoBanco;
