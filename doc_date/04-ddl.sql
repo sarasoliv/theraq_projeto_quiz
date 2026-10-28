@@ -1,5 +1,5 @@
 -- Passo 7 — Modelo físico
--- Equipe:
+-- Equipe: Sara dos Santos de Oliveira
 -- PostgreSQL. Por que este SGBD:
 -- Contrato com Aplicativos para Web: os nomes abaixo são os acordados.
 -- Banco vazio:
