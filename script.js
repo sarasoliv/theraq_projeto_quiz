@@ -26,39 +26,27 @@ const els = {
 // ==========================================================
 // Banco de questões do quiz
 // ==========================================================
-const questions = [
-  {
-    question: 'Qual tag é usada para criar um parágrafo em HTML?',
-    options: ['<p>', '<paragraph>', '<section>', '<text>'],
-    correctIndex: 0,
-    explanation: 'A tag <p> define um parágrafo em HTML e é a estrutura semântica correta para textos em blocos.',
-     },
-  {
-    question: 'Qual propriedade CSS altera a cor do texto de um elemento?',
-    options: ['background-color', 'color', 'font-size', 'border'],
-    correctIndex: 1,
-    explanation: 'A propriedade color define a cor do texto, enquanto background-color controla o fundo.',
-     },
-  {
-    question: 'Qual comando exibe uma mensagem ao usuário em uma caixa de diálogo?',
-    options: ['console.log()', 'alert()', 'prompt()', 'confirm()'],
-    correctIndex: 1,
-    explanation: 'A função alert() abre uma caixa de diálogo com uma mensagem para o usuário.',
-  },
-  {
-    question: 'Qual estrutura repete um bloco de código enquanto uma condição for verdadeira?',
-    options: ['if', 'switch', 'while', 'return'],
-    correctIndex: 2,
-    explanation: 'A estrutura while executa um bloco repetidamente enquanto a condição especificada continuar verdadeira.',
-     },
-  {
-    question: 'Qual é a principal função de um feedback visual em um quiz?',
-    options: ['Aumentar o tempo de carregamento', 'Indicar claramente a ação do usuário', 'Remover texto da tela', 'Ocultar o ranking'],
-    correctIndex: 1,
-    explanation: 'Feedback visual ajuda o usuário a entender o que aconteceu, como escolha realizada, resposta correta ou errada e avanço no fluxo.',
-     }
-];
+let questions = [];
 
+// Função para buscar as perguntas do banco SQL assim que a página abrir
+async function carregarPerguntasDoBanco() {
+  try {
+    const resposta = await fetch('/api/perguntas'); // Chama a rota da API da Vercel
+    if (!resposta.ok) throw new Error('Erro ao carregar do banco');
+
+    questions = await resposta.json();
+    console.log("Perguntas carregadas do banco:", questions);
+
+    // Se o seu código tiver uma função para iniciar o quiz (ex: iniciarJogo ou carregarPrimeiraPergunta), chame-a aqui:
+    iniciarQuiz();
+  } catch (erro) {
+    console.error("Erro ao buscar perguntas:", erro);
+    alert("Não foi possível carregar as perguntas do banco de dados.");
+  }
+}
+
+// Chame essa função quando a página carregar
+window.addEventListener('DOMContentLoaded', carregarPerguntasDoBanco);
 // ==========================================================
 // Estado atual da partida
 // ==========================================================
