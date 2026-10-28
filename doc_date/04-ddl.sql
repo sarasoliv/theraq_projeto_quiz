@@ -39,27 +39,27 @@ CREATE TABLE tabela_ranking(
 
 CREATE TABLE opcao_questoes(
 	id_opcao SERIAL PRIMARY KEY,
-	Opcao_a	TEXT NOT NULL,
-	Opcao_b TEXT NOT NULL,
-	Opcao_c	TEXT NOT NULL,
-	Opcao_d	TEXT NOT NULL,
-	Opcao_e	TEXT NOT NULL
+	opcao_a	TEXT NOT NULL,
+	opcao_b TEXT NOT NULL,
+	opcao_c	TEXT NOT NULL,
+	opcao_d	TEXT NOT NULL,
+	opcao_e	TEXT NOT NULL
 );
 
-CREATE TABLE fontes (
+CREATE TABLE fonte (
     id SERIAL PRIMARY KEY,
     referencia TEXT NOT NULL
 );
 
 CREATE TABLE questoes (
     id SERIAL PRIMARY KEY,
-    Enunciado TEXT NOT NULL,
+    enunciado TEXT NOT NULL,
     opcao_id INT,
-    Resposta_correta CHAR(1),
+    resposta_correta CHAR(1),
     dificuldade_nivel VARCHAR(50),
     fonte_id INT,
 	
-    FOREIGN KEY (fonte_id) REFERENCES Fontes(id)
+    FOREIGN KEY (fonte_id) REFERENCES fonte(id)
 );
 
 CREATE TABLE questoes_respondidas(
@@ -70,8 +70,8 @@ CREATE TABLE questoes_respondidas(
 	acerto BOOLEAN NOT NULL, 
 	data_resposta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	
-	CONSTRAINT fk_usuario FOREIGN KEY(usuario_id) REFERENCES Cadastro_usuario(id_usuario) ON DELETE CASCADE,
-	CONSTRAINT fk_questao FOREIGN KEY(questao_id) REFERENCES Questoes(id_questao) ON DELETE CASCADE
+	CONSTRAINT fk_usuario FOREIGN KEY(usuario_id) REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
+	CONSTRAINT fk_questao FOREIGN KEY(questao_id) REFERENCES questoes(id_questao) ON DELETE CASCADE
 );
 
 COMMIT;
