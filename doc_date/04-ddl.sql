@@ -52,7 +52,7 @@ CREATE TABLE fonte (
 );
 
 CREATE TABLE questoes (
-    id SERIAL PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     enunciado TEXT NOT NULL,
     opcao_id INT,
     resposta_correta CHAR(1),
