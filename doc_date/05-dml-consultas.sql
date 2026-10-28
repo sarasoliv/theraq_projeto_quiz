@@ -1,6 +1,6 @@
 -- Passo 8 — Carga de teste e consultas
 -- Rode depois de 04-ddl.sql.
---   psql -d tech_trivia -v ON_ERROR_STOP=1 -f 05-dml-consultas.sql
+--   psql -d projeto_quiz_irsy -v ON_ERROR_STOP=1 -f 05-dml-consultas.sql
 -- Troquem os nomes pelos do dicionário.
 
 BEGIN;
