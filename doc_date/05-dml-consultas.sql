@@ -29,19 +29,17 @@ INSERT INTO opcao_questoes (Opcao_a, Opcao_b, Opcao_c, Opcao_d, Opcao_e) VALUES
 ('General Electric Medical Systems Canada.', 'Siemens Healthineers Canada.', 'Bombardier Medical Robotics.', 'Atomic Energy of Canada Limited (AECL).', 'Philips Medical Systems Canada.'),
 ('1985 e 1987.', '1995 e 1998.', '1999 e 2000.', '1998 e 2002.', '1980 e 1985.'),
 ('8 acidentes.', '5 acidentes.', '6 acidentes.', '7 acidentes.', '4 acidentes.'),
-('Modo Ultrassom e Modo Laser de Alta Intensidade.', 'Modo Radiação Gama e Modo Próton-terapia.', 'Modo Termoterapia e Modo Crioterapia.', 'Modo Tomografia e Modo Ressonância.', 'Modo Elétrons (direto) e Modo Photons (Raio-X de alta energia).'),
-('Projeto criado do zero, sem reaproveitamento de conceitos.', 'Evolução dos modelos Therac-6 e Therac-20.', 'Versão modificada de um acelerador industrial europeu.', 'Protótipo acadêmico nunca comercializado antes.', 'Cópia direta de um acelerador americano concorrente.'),
-('O uso de inteligência artificial para calcular a dose.', 'A inclusão de um braço robótico articulado.', 'A substituição do terminal por tela touchscreen.', 'A eliminação das intertravas mecânicas de hardware, confiando a segurança totalmente ao software.', 'A utilização de supercondutores criogênicos.'),
-('Sensação de choque elétrico, dor aguda e sensação de queimadura/calor intenso.', 'Tontura instantânea e perda temporária da visão.', 'Parestesia súbita nos membros inferiores.', 'Náuseas violentas e perda auditiva imediata.', 'Paralisia temporária dos membros superiores.');
-
+('Certo', 'Errado', 'N/A', 'N/A', 'N/A'),
+('Certo', 'Errado', 'N/A', 'N/A', 'N/A'),
+    
 -- 3. Inserção das Questões (IDs fact-001 a fact-006, incluindo Certo/Errado)
 INSERT INTO questoes (id, Enunciado, opcao_id, Resposta_correta, dificuldade_nivel, fonte_id) VALUES
 ('fact-001', 'O que era exatamente o Therac-25 e qual era a sua finalidade primária na medicina?', 1, 'B', 'facil', 1),
 ('fact-002', 'Qual foi a empresa canadense responsável pelo projeto e fabricação do Therac-25?', 2, 'D', 'facil', 1),
 ('fact-003', 'Entre quais anos ocorreram os acidentes graves de sobredosagem de radiação documentados?', 3, 'A', 'medio', 1),
 ('fact-004', 'Quantos acidentes de sobredosagem massiva de radiação foram oficialmente confirmados pelo estudo de Leveson?', 4, 'C', 'medio', 1),
-('fact-005', 'O projeto original do software do Therac-25 priorizou adequadamente a sincronização multithreading desde o início?', 5, 'Errado', 'medio', 2),
-('fact-006', 'A ausência de intertravas mecânicas de segurança foi um fator determinante para a gravidade dos acidentes do Therac-25?', 6, 'Certo', 'facil', 3);
+('fact-005', 'O projeto original do software do Therac-25 priorizou adequadamente a sincronização multithreading desde o início?', 5, 'B', 'medio', 2),
+('fact-006', 'A ausência de intertravas mecânicas de segurança foi um fator determinante para a gravidade dos acidentes do Therac-25?', 6, 'A', 'facil', 3);
 
 COMMIT;
 
