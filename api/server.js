@@ -1,11 +1,16 @@
 const http = require("node:http");
 const fs = require("node:fs");
+const { Pool } = require("pg");
 const path = require("node:path");
 
 const projectRoot = path.resolve(__dirname, "..");
 const maximumQuestionCount = 10;
 
 loadEnvFile();
+const pool = process.env.DATABASE_URL ? new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_SSL === "false" ? false : { rejectUnauthorized: false }
+}) : null;
 const port = Number(process.env.PORT) || 3000;
 
 const server = http.createServer(async (request, response) => {
@@ -15,8 +20,62 @@ const server = http.createServer(async (request, response) => {
     if (request.method === "GET" && requestUrl.pathname === "/api/health") {
       return sendJson(response, 200, {
         status: "ok",
-        groqConfigured: Boolean(process.env.GROQ_API_KEY)
+        groqConfigured: Boolean(process.env.GROQ_API_KEY), databaseConfigured: Boolean(process.env.DATABASE_URL)
       });
+    }
+
+    if (request.method === "GET" && requestUrl.pathname === "/api/ranking") {
+      if (!pool) return sendJson(response, 503, { error: "Configure DATABASE_URL no arquivo api/.env." });
+      const { rows } = await pool.query(
+        "SELECT nome_jogador AS nickname, pontuacao_jogador AS score, total_acertos, data_jogado FROM tabela_ranking ORDER BY pontuacao_jogador DESC, data_jogado ASC LIMIT 8"
+      );
+      return sendJson(response, 200, rows);
+    }
+
+    if (request.method === "GET" && requestUrl.pathname === "/api/perguntas") {
+      if (!pool) return sendJson(response, 503, { error: "Configure DATABASE_URL no arquivo api/.env." });
+      const { rows } = await pool.query(`
+        SELECT q.id, q.enunciado, q.resposta_correta, q.dificuldade_nivel,
+               f.referencia, o.opcao_a, o.opcao_b, o.opcao_c, o.opcao_d, o.opcao_e
+        FROM questoes q
+        JOIN opcao_questoes o ON o.id_opcao = q.opcao_id
+        LEFT JOIN fonte f ON f.id = q.fonte_id
+        ORDER BY q.id
+      `);
+      return sendJson(response, 200, rows.map(q => ({
+        ...q,
+        alternativas: [q.opcao_a, q.opcao_b, q.opcao_c, q.opcao_d, q.opcao_e]
+      })));
+    }
+
+    if (request.method === "POST" && requestUrl.pathname === "/api/resultados") {
+      if (!pool) return sendJson(response, 503, { error: "Configure DATABASE_URL no arquivo api/.env." });
+      let body;
+      try { body = await readJsonBody(request); }
+      catch (error) { return sendJson(response, error.statusCode || 400, { error: error.message }); }
+      const nome = typeof body?.nome_usuario === "string" ? body.nome_usuario.trim().slice(0, 50) : "";
+      const acertos = Number(body?.total_acertos);
+      const pontuacao = Number(body?.pontuacao_final);
+      if (!nome || !Number.isInteger(acertos) || acertos < 0 || !Number.isInteger(pontuacao) || pontuacao < 0) {
+        return sendJson(response, 400, { error: "Nome, acertos e pontuação são obrigatórios e devem ser válidos." });
+      }
+      const client = await pool.connect();
+      try {
+        await client.query("BEGIN");
+        const userResult = await client.query(
+          "INSERT INTO cadastro_usuario (nome) VALUES ($1) ON CONFLICT (nome) DO UPDATE SET nome = EXCLUDED.nome RETURNING id_usuario",
+          [nome]
+        );
+        await client.query(
+          "INSERT INTO tabela_ranking (usuario_id, nome_jogador, pontuacao_jogador, total_acertos) VALUES ($1, $2, $3, $4)",
+          [userResult.rows[0].id_usuario, nome, pontuacao, acertos]
+        );
+        await client.query("COMMIT");
+      } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+      } finally { client.release(); }
+      return sendJson(response, 201, { saved: true });
     }
 
     if (request.method === "POST" && requestUrl.pathname === "/api/questions") {
