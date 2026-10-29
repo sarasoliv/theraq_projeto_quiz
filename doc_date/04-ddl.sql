@@ -31,10 +31,14 @@ CREATE TABLE cadastro_usuario(
 );
 
 CREATE TABLE tabela_ranking(
-	id_jogador SERIAL PRIMARY KEY,
-	nome_jogador VARCHAR(50) NOT NULL,
+	id_ranking SERIAL PRIMARY KEY,
 	pontuacao_jogador SMALLINT NOT NULL,
-	data_jogado TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	data_jogado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	usuario_id INT NOT NULL,
+	questoes_respondidas_id INT NOT NULL
+ 	
+	CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES cadastro_usuario(id_usuario) 
+	CONSTRAINT fk_questoes_respondidas FOREIGN KEY (questoes_respondidas_id) REFERENCES questoes_respondidas(id_resposta) 
 );
 
 CREATE TABLE opcao_questoes(
@@ -55,24 +59,26 @@ CREATE TABLE fonte (
 CREATE TABLE questoes (
     id VARCHAR(100) PRIMARY KEY,
     enunciado TEXT NOT NULL,
-    opcao_id INT,
     resposta_correta CHAR(1),
     dificuldade_nivel VARCHAR(50),
     fonte_id INT,
+	opcao_id INT,
 	
-    FOREIGN KEY (fonte_id) REFERENCES fonte(id)
+    CONSTRAINT fk_fonte FOREIGN KEY (fonte_id) REFERENCES fonte(id) 
+	CONSTRAINT fk_opcao FOREIGN KEY (opcao_id) REFERENCES opcao_questoes(id_opcao)
 );
 
 CREATE TABLE questoes_respondidas(
-	id_resposta SERIAL PRIMARY KEY 	,
-	usuario_id INT NOT NULL,
-	questao_id INT NOT NULL,
+	id_resposta SERIAL PRIMARY KEY,
 	resposta_usuario VARCHAR(1) NOT NULL,
 	acerto BOOLEAN NOT NULL, 
 	data_resposta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	usuario_id INT NOT NULL,
+	questao_id VARCHAR(100) NOT NULL,
 	
 	CONSTRAINT fk_usuario FOREIGN KEY(usuario_id) REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
-	CONSTRAINT fk_questao FOREIGN KEY(questao_id) REFERENCES questoes(id_questao) ON DELETE CASCADE
+	CONSTRAINT fk_questao FOREIGN KEY(questao_id) REFERENCES questoes(id) ON DELETE CASCADE
 );
+
 
 COMMIT;
