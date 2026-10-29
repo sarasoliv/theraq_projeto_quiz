@@ -17,10 +17,10 @@ BEGIN;
 -- TODO: INSERT
 
 --Inserção das Fontes
-INSERT INTO fonte (id, referencia) VALUES 
-(1, 'Leveson, Nancy G., & Turner, Clark S. (1993). An Investigation of the Therac-25 Accidents. IEEE Computer'),
-(2, 'Leveson, Nancy G. (1995). Safeware: System Safety and Computers'),
-(3, 'U.S. Food and Drug Administration (FDA) / CDRH (1986–1987)');
+INSERT INTO fonte (id, referencia, url) VALUES 
+(1, 'Leveson, Nancy G., & Turner, Clark S. (1993). An Investigation of the Therac-25 Accidents. IEEE Computer', 'https://sitem.herts.ac.uk/aer/papers/therac25.pdf'),
+(2, 'Leveson, Nancy G. (1995). Safeware: System Safety and Computers', 'https://mitpress.mit.edu/9780201631210/safeware/'),
+(3, 'U.S. Food and Drug Administration (FDA) / CDRH (1986–1987) - Documentos de Recall e CAP', 'https://www.fda.gov/medical-devices/medical-device-recalls'),
 
 --Inserção das Opções
 INSERT INTO opcao_questoes (Opcao_a, Opcao_b, Opcao_c, Opcao_d, Opcao_e) VALUES
