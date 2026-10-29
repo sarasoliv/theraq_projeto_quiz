@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS cadastro_usuario (
   nome VARCHAR(50) NOT NULL UNIQUE
 );
 CREATE TABLE IF NOT EXISTS tabela_ranking (
-  id_jogador SERIAL PRIMARY KEY,
+  id_ranking SERIAL PRIMARY KEY,
   usuario_id INTEGER REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
   nome_jogador VARCHAR(50) NOT NULL,
   pontuacao_jogador INTEGER NOT NULL CHECK (pontuacao_jogador >= 0),
@@ -40,14 +40,17 @@ CREATE TABLE IF NOT EXISTS questoes_respondidas (
   acerto BOOLEAN NOT NULL,
   data_resposta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
 CREATE TABLE IF NOT EXISTS solucionar (
   id_solucionar SERIAL PRIMARY KEY,
   usuario_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
-  questao_id VARCHAR(100) NOT NULL REFERENCES questoes(id) ON DELETE CASCADE,
-  resposta_usuario VARCHAR(1) NOT NULL CHECK (resposta_usuario IN ('A','B','C','D','E')),
-  acerto BOOLEAN NOT NULL,
-  data_resposta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  resposta_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS possui (
+  solucionar_id INT,
+	ranking_id	INT,
+	CONSTRAINT pk_possui PRIMARY KEY (solucionar_id,ranking_id),
+	CONSTRAINT fk_solucionar foreign key (solucionar_id) references solucionar(id_solucionar),
+	CONSTRAINT fk_ranking foreign key (ranking_id) references tabela_ranking(id_ranking)
 );
 
 INSERT INTO fonte (id, referencia, url) VALUES 
