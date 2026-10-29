@@ -29,12 +29,12 @@ Uma frase por linha, ligada a um requisito. Cardinalidade dos dois lados, mínim
 
 | Relacionamento | Cardinalidade | Justificativa | Requisito |
 | --- | --- | --- | --- |
-| Possui (Questões / Opcao_questoes) | (0,N) , (1,1) | Uma questão possui obrigatoriamente 1 conjunto de opções, enquanto uma opção pode estar associada a nenhuma ou a várias questões. | Requisitos funcionais |
-| Baseia-se (Questões / Fonte) | (0,N) , (0,1) | Uma questão pode estar associada a no máximo 1 fonte (opcional), e uma fonte pode fundamentar nenhuma ou várias questões. | Requisitos funcionais |
-| Responde (Cadastro_usuario / Questoes_respondidas) | (1,N) , (1,1) | Um usuário pode registrar uma ou várias respostas, e cada registro de resposta pertence obrigatoriamente a 1 usuário. | Regras de negócios |
-| Avalia (Questoes / Questoes_respondidas) | (1,N) , (1,1) | Uma questão pode ter sido respondida várias vezes ou nenhuma, e cada registro de resposta avalia obrigatoriamente 1 questão. | Regras de negócios |
-| Gera (Cadastro_usuario / Tabela_ranking) | (0,N) , (0,1) | Um usuário pode ter zero ou vários registros de pontuação no ranking, e cada registro de ranking referencia um usuário. | Regras de negócios |
-| Solucionar (Cadastro_usuario / Solucionar) | (1,N) , (1,1) | Um usuário pode ter vários registros de solução, e cada registro de solução está vinculado a 1 usuário. | Regras de negócios |
+| Contem (Questões / Opcao_questoes) | (0,N) , (1,1) | Uma questão possui obrigatoriamente 1 conjunto de opções, enquanto uma opção pode estar associada a nenhuma ou a várias questões. | Requisitos funcionais |
+| Contem (Questões / Fonte) | (0,N) , (0,1) | Uma questão pode estar associada a no máximo 1 fonte (opcional), e uma fonte pode fundamentar nenhuma ou várias questões. | Requisitos funcionais |
+| Soluciona (Cadastro_usuario / Questoes_respondidas) | (1,N) , (1,1) | Um usuário pode registrar uma ou várias respostas, e cada registro de resposta pertence obrigatoriamente a 1 usuário. | Regras de negócios |
+| Contem (Questoes / Questoes_respondidas) | (1,N) , (1,1) | Uma questão pode ter sido respondida várias vezes ou nenhuma, e cada registro de resposta avalia obrigatoriamente 1 questão. | Regras de negócios |
+| Possui (Cadastro_usuario / Tabela_ranking) | (0,N) , (0,1) | Um usuário pode ter zero ou vários registros de pontuação no ranking, e cada registro de ranking referencia um usuário. | Regras de negócios |
+| Possui (Cadastro_usuario / Solucionar) | (1,N) , (1,1) | Um usuário pode ter vários registros de solução, e cada registro de solução está vinculado a 1 usuário. | Regras de negócios |
 | Possui (Solucionar / Tabela_ranking) | (1,N) , (1,N) | Um registro da tabela associativa conecta instâncias de soluções enviadas com pontuações do ranking. | Regras de negócios |
 
 O diagrama e esta tabela descrevem o mesmo modelo. Toda entidade do desenho está na tabela.
