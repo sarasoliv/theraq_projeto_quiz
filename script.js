@@ -20,168 +20,42 @@ const els = {
   finalScore: document.getElementById('final-score'),
   finalRankingList: document.getElementById('final-ranking-list'),
   sessionRankingList: document.getElementById('session-ranking-list'),
-  statusPill: document.getElementById('status-pill'),
-  themeButtons: document.querySelectorAll('[data-theme]'),
-  fontButtons: document.querySelectorAll('[data-font]'),
-  highContrastToggle: document.getElementById('high-contrast-toggle'),
-  reducedMotionToggle: document.getElementById('reduced-motion-toggle'),
-  daltonismControl: document.getElementById('daltonism-control'),
-  volumeControl: document.getElementById('volume-control')
+  statusPill: document.getElementById('status-pill')
 };
-
-const accessibilityState = {
-  theme: 'dark',
-  fontScale: 1,
-  highContrast: false,
-  reducedMotion: false,
-  daltonism: 'none',
-  volume: 0.7,
-};
-
-let audioContext;
-
-function initializeAudio() {
-  const AudioCtor = window.AudioContext || window.webkitAudioContext;
-  if (!AudioCtor) return;
-  if (!audioContext) {
-    audioContext = new AudioCtor();
-  }
-
-  if (audioContext.state === 'suspended') {
-    audioContext.resume();
-  }
-}
-
-function playFeedbackTone(isCorrect) {
-  initializeAudio();
-  if (!audioContext) return;
-
-  const startTime = audioContext.currentTime;
-  const oscillator = audioContext.createOscillator();
-  const gainNode = audioContext.createGain();
-  const frequency = isCorrect ? 880 : 220;
-  const sweepEnd = isCorrect ? 1320 : 120;
-
-  oscillator.type = isCorrect ? 'triangle' : 'sawtooth';
-  oscillator.frequency.setValueAtTime(frequency, startTime);
-  oscillator.frequency.exponentialRampToValueAtTime(sweepEnd, startTime + 0.2);
-
-  gainNode.gain.setValueAtTime(0.0001, startTime);
-  gainNode.gain.exponentialRampToValueAtTime(accessibilityState.volume, startTime + 0.02);
-  gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.28);
-
-  oscillator.connect(gainNode);
-  gainNode.connect(audioContext.destination);
-  oscillator.start(startTime);
-  oscillator.stop(startTime + 0.3);
-}
-
-function applyAccessibilityState() {
-  document.body.classList.toggle('theme-light', accessibilityState.theme === 'light');
-  document.body.classList.toggle('theme-dark', accessibilityState.theme === 'dark');
-  document.body.classList.toggle('high-contrast', accessibilityState.highContrast);
-  document.body.classList.toggle('reduced-motion', accessibilityState.reducedMotion);
-
-  document.body.classList.remove('daltonism-protanopia', 'daltonism-deuteranopia', 'daltonism-tritanopia');
-  if (accessibilityState.daltonism !== 'none') {
-    document.body.classList.add(`daltonism-${accessibilityState.daltonism}`);
-  }
-
-  document.documentElement.style.setProperty('--font-scale', accessibilityState.fontScale.toFixed(2));
-  els.volumeControl.value = String(accessibilityState.volume);
-  els.reducedMotionToggle.checked = accessibilityState.reducedMotion;
-  els.daltonismControl.value = accessibilityState.daltonism;
-  els.highContrastToggle.classList.toggle('is-active', accessibilityState.highContrast);
-
-  els.themeButtons.forEach((button) => {
-    button.classList.toggle('is-active', button.dataset.theme === accessibilityState.theme);
-  });
-}
-
-function updateTextScale(delta) {
-  accessibilityState.fontScale = Math.min(1.5, Math.max(0.9, Number((accessibilityState.fontScale + delta).toFixed(2))));
-  applyAccessibilityState();
-}
-
-function bindAccessibilityControls() {
-  els.themeButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      accessibilityState.theme = button.dataset.theme;
-      applyAccessibilityState();
-    });
-  });
-
-  els.fontButtons.forEach((button) => {
-    button.addEventListener('click', () => {
-      const delta = button.dataset.font === 'increase' ? 0.1 : -0.1;
-      updateTextScale(delta);
-    });
-  });
-
-  els.highContrastToggle.addEventListener('click', () => {
-    accessibilityState.highContrast = !accessibilityState.highContrast;
-    applyAccessibilityState();
-  });
-
-  els.reducedMotionToggle.addEventListener('change', (event) => {
-    accessibilityState.reducedMotion = event.target.checked;
-    applyAccessibilityState();
-  });
-
-  els.daltonismControl.addEventListener('change', (event) => {
-    accessibilityState.daltonism = event.target.value;
-    applyAccessibilityState();
-  });
-
-  els.volumeControl.addEventListener('input', (event) => {
-    accessibilityState.volume = Number(event.target.value);
-  });
-}
 
 // ==========================================================
 // Banco de questões do quiz
 // ==========================================================
 let questions = [];
 
-function iniciarQuiz() {
-  if (!questions.length) {
-    updateTopbar();
-    return;
-  }
-
-  state.currentQuestionIndex = 0;
-  state.score = 0;
-  renderQuestion();
-  showScreen('quiz');
-}
-
 // Função para buscar as perguntas do banco SQL assim que a página abrir
 async function carregarPerguntasDoBanco() {
+  els.startQuizButton.disabled = true;
+  els.startQuizButton.textContent = 'Carregando perguntas...';
   try {
-    const resposta = await fetch('/api/perguntas'); // Chama a rota da API da Vercel
-    if (!resposta.ok) throw new Error('Erro ao carregar do banco');
-
-    questions = await resposta.json();
-    console.log("Perguntas carregadas do banco:", questions);
-
-    if (questions.length) {
-      iniciarQuiz();
-      return;
-    }
-
-    alert('Nenhuma pergunta foi encontrada no banco.');
+    const resposta = await fetch('/api/perguntas');
+    if (!resposta.ok) throw new Error('Erro ao carregar perguntas do banco.');
+    const dados = await resposta.json();
+    questions = dados.map((item) => ({
+      id: item.id,
+      question: item.enunciado,
+      options: item.alternativas,
+      correctIndex: ['A', 'B', 'C', 'D', 'E'].indexOf(String(item.resposta_correta).toUpperCase()),
+      explanation: item.explicacao || `Fonte: ${item.referencia || 'material de referência'}.`
+    })).filter((item) => item.question && item.options.length >= 2 && item.correctIndex >= 0);
+    if (!questions.length) throw new Error('O banco não retornou perguntas válidas.');
+    els.startQuizButton.disabled = false;
+    els.startQuizButton.textContent = 'Começar quiz';
+    updateTopbar();
   } catch (erro) {
-    console.error("Erro ao buscar perguntas:", erro);
-    alert("Não foi possível carregar as perguntas do banco de dados.");
+    console.error('Erro ao buscar perguntas:', erro);
+    els.startQuizButton.textContent = 'Tentar carregar novamente';
+    els.startQuizButton.disabled = false;
+    alert('Não foi possível carregar as perguntas do banco. Confira DATABASE_URL e execute schema.sql.');
   }
 }
+window.addEventListener('DOMContentLoaded', carregarPerguntasDoBanco);
 
-// Chame essa função quando a página carregar
-window.addEventListener('DOMContentLoaded', () => {
-  bindAccessibilityControls();
-  applyAccessibilityState();
-  carregarPerguntasDoBanco();
-});
 // ==========================================================
 // Estado atual da partida
 // ==========================================================
@@ -238,8 +112,15 @@ function showScreen(screenName) {
 // ==========================================================
 // Ranking e renderização da interface
 // ==========================================================
-function renderSidebarRanking() {
-  const ranking = getRanking()
+async function renderSidebarRanking() {
+  let rankingFromDatabase = [];
+  try {
+    const response = await fetch('/api/ranking');
+    if (response.ok) rankingFromDatabase = await response.json();
+  } catch (error) {
+    console.warn('Usando ranking local:', error);
+  }
+  const ranking = (rankingFromDatabase.length ? rankingFromDatabase : getRanking())
     .filter((entry) => entry && entry.nickname)
     .sort((a, b) => b.score - a.score || a.nickname.localeCompare(b.nickname));
 
@@ -353,8 +234,18 @@ function updateGlobalRanking() {
   });
 }
 
-function finishQuiz() {
+async function finishQuiz() {
   updateGlobalRanking();
+  try {
+    const response = await fetch('/api/resultados', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome_usuario: state.playerName, total_acertos: state.score, pontuacao_final: state.score })
+    });
+    if (!response.ok) console.error('O servidor não conseguiu salvar o resultado.');
+  } catch (error) {
+    console.error('Não foi possível salvar o resultado no banco:', error);
+  }
   els.finalScore.textContent = `${state.score} / ${questions.length}`;
   showScreen('final');
 }
@@ -379,6 +270,7 @@ function nextStep() {
 }
 
 function startQuiz() {
+  if (!questions.length) { alert('As perguntas ainda não foram carregadas.'); return; }
   const name = els.playerNameInput.value.trim();
 
   if (!name) {
@@ -409,10 +301,8 @@ els.confirmButton.addEventListener('click', () => {
     return;
   }
 
-  const isCorrect = state.selectedAnswerIndex === questions[state.currentQuestionIndex].correctIndex;
-  if (isCorrect) state.score += 1;
+  if (state.selectedAnswerIndex === questions[state.currentQuestionIndex].correctIndex) state.score += 1;
   state.answered = true;
-  playFeedbackTone(isCorrect);
   showAnswerFeedback();
 });
 els.finalButton.addEventListener('click', () => {
