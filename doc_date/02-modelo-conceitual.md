@@ -15,11 +15,13 @@ Versão 2.0
 | Entidade | Atributos | Identificador |
 | --- | --- | --- |
 | Cadastro_usuario | id_usuario, nome | id_usuario |
-| Tabela_ranking | id_jogador, nome_jogador, pontuacao_jogador, data_jogado | id_jogador |
+| Tabela_ranking | id_ranking, usuario_id, nome_jogador, pontuacao_jogador, total_acertos, data_jogado | id_ranking |
 | Opcao_questoes | id_opcao, opcao_a, opcao_b, opcao_c, opcao_d, opcao_e | id_opcao |
 | Fonte | id, referencia, url | id |
-| Questoes | id, enunciado, explicacao, opcao_id, resposta_correta, dificuldade_nivel, fonte_id | id |
+| Questoes | id, enunciado, opcao_id, resposta_correta, dificuldade_nivel, fonte_id | id |
 | Questoes_respondidas | id_resposta, usuario_id, questao_id, resposta_usuario, acerto, data_resposta | id_resposta |
+| Solucionar | id_solucionar, usuario_id, resposta_id | id_solucionar |
+| Possui | solucionar_id, ranking_id | solucionar_id, ranking_id |
 
 ## Relacionamentos
 
@@ -27,10 +29,12 @@ Uma frase por linha, ligada a um requisito. Cardinalidade dos dois lados, mínim
 
 | Relacionamento | Cardinalidade | Justificativa | Requisito |
 | --- | --- | --- | --- |
-| Possui (Questões / Opções) | (1,1) , (0,N) | Cada questão possui obrigatoriamente 1 conjunto de alternativas, e um conjunto de opções pode estar associado a nenhuma ou a várias questões. | Requisitos funcionais |
-| Baseia-se (Questões / Fonte) | (0,N) , (1,1) | Uma questão está associada a exatamente 1 fonte de referência, e uma fonte pode fundamentar nenhuma ou várias questões. | Requisitos funcionais |
-| Responde (Usuário / Questões Respondidas) | (1,N) , (1,1) | Um usuário pode registrar uma ou várias respostas no histórico, e cada registro de resposta pertence obrigatoriamente a 1 usuário. | Regras de negócios |
-| Avalia (Questões / Questões Respondidas) | (1,N) , (1,1) | Uma questão pode aparecer em zero ou várias respostas no histórico, e cada registro de resposta avalia obrigatoriamente 1 questão específica. | Regras de negócios |
-
+| Possui (Questões / Opcao_questoes) | (0,N) , (1,1) | Uma questão possui obrigatoriamente 1 conjunto de opções, enquanto uma opção pode estar associada a nenhuma ou a várias questões. | Requisitos funcionais |
+| Baseia-se (Questões / Fonte) | (0,N) , (0,1) | Uma questão pode estar associada a no máximo 1 fonte (opcional), e uma fonte pode fundamentar nenhuma ou várias questões. | Requisitos funcionais |
+| Responde (Cadastro_usuario / Questoes_respondidas) | (1,N) , (1,1) | Um usuário pode registrar uma ou várias respostas, e cada registro de resposta pertence obrigatoriamente a 1 usuário. | Regras de negócios |
+| Avalia (Questoes / Questoes_respondidas) | (1,N) , (1,1) | Uma questão pode ter sido respondida várias vezes ou nenhuma, e cada registro de resposta avalia obrigatoriamente 1 questão. | Regras de negócios |
+| Gera (Cadastro_usuario / Tabela_ranking) | (0,N) , (0,1) | Um usuário pode ter zero ou vários registros de pontuação no ranking, e cada registro de ranking referencia um usuário. | Regras de negócios |
+| Solucionar (Cadastro_usuario / Solucionar) | (1,N) , (1,1) | Um usuário pode ter vários registros de solução, e cada registro de solução está vinculado a 1 usuário. | Regras de negócios |
+| Possui (Solucionar / Tabela_ranking) | (1,N) , (1,N) | Um registro da tabela associativa conecta instâncias de soluções enviadas com pontuações do ranking. | Regras de negócios |
 
 O diagrama e esta tabela descrevem o mesmo modelo. Toda entidade do desenho está na tabela.
