@@ -3,16 +3,28 @@
 -- Colem a mensagem de erro do PostgreSQL no comentário Resultado.
 -- Troquem os nomes pelos do dicionário.
 
--- Regra: não existem duas categorias com o mesmo nome.
+-- Regra: Não entra pergunta sem categoria (nível de dificuldade) preenchida.
 -- Resultado:
--- INSERT INTO categoria (nome) VALUES ('nome que já existe');
+-- ERROR: null value in column "dificuldade_nivel" of relation "questoes" violates not-null constraint
+-- DETAIL: Failing row contains (fact-999, Enunciado de teste, 1, A, null, 1).
 
--- Regra: não existem duas fontes com a mesma URL.
--- Resultado:
--- INSERT INTO fonte (titulo, url, id_publicador, id_idioma)
--- VALUES ('outra', 'url que já existe', 1, 'en');
+INSERT INTO questoes (id, enunciado, opcao_id, resposta_correta, dificuldade_nivel, fonte_id)
+VALUES ('fact-999', 'Enunciado de teste', 1, 'A', NULL, 1);
 
--- Regra: pergunta sem título, enunciado ou explicação não entra.
+
+-- Regra: Não existem duas fontes com a mesma URL.
 -- Resultado:
--- INSERT INTO pergunta (id_pergunta, titulo, enunciado, explicacao, id_categoria, id_fonte, id_alternativa_correta)
--- VALUES ('fact-999', NULL, 'enunciado', 'explicacao', 1, 1, 1);
+-- ERROR: duplicate key value violates unique constraint "fonte_url_key"
+-- DETAIL: Key (url)=(https://sitem.herts.ac.uk/aer/papers/therac25.pdf) already exists.
+
+INSERT INTO fonte (referencia, url)
+VALUES ('Fonte Duplicada Teste', 'https://sitem.herts.ac.uk/aer/papers/therac25.pdf');
+
+
+-- Regra: Pergunta sem enunciado não entra.
+-- Resultado:
+-- ERROR: null value in column "enunciado" of relation "questoes" violates not-null constraint
+-- DETAIL: Failing row contains (fact-998, null, 1, A, facil, 1).
+
+INSERT INTO questoes (id, enunciado, opcao_id, resposta_correta, dificuldade_nivel, fonte_id)
+VALUES ('fact-998', NULL, 1, 'A', 'facil', 1);
