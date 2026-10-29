@@ -1,14 +1,19 @@
-import { sql } from '@vercel/postgres';
-
-export default async function handler(request, response) {
+// Handler compatível com plataformas serverless que fornecem DATABASE_URL.
+const { Pool } = require("pg");
+let pool;
+module.exports = async function handler(request, response) {
+  if (!process.env.DATABASE_URL) return response.status(503).json({ error: "DATABASE_URL não configurada." });
   try {
-    // Busca todas as perguntas cadastradas no banco SQL
-    const { rows } = await sql`SELECT * FROM perguntas;`;
-    
-    // Retorna as perguntas em formato JSON para o seu site
-    return response.status(200).json(rows);
+    pool ||= new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+    const { rows } = await pool.query(`
+      SELECT q.id, q.enunciado, q.resposta_correta, q.dificuldade_nivel,
+             f.referencia, o.opcao_a, o.opcao_b, o.opcao_c, o.opcao_d, o.opcao_e
+      FROM questoes q JOIN opcao_questoes o ON o.id_opcao = q.opcao_id
+      LEFT JOIN fonte f ON f.id = q.fonte_id ORDER BY q.id
+    `);
+    return response.status(200).json(rows.map(q => ({ ...q, alternativas: [q.opcao_a, q.opcao_b, q.opcao_c, q.opcao_d, q.opcao_e] })));
   } catch (error) {
-    console.error("Erro ao buscar perguntas:", error);
-    return response.status(500).json({ error: 'Erro ao carregar as perguntas do banco.' });
+    console.error("Erro ao consultar perguntas:", error.message);
+    return response.status(500).json({ error: "Erro ao carregar perguntas." });
   }
-}
+};
