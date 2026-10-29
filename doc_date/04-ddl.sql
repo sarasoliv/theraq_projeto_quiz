@@ -48,7 +48,8 @@ CREATE TABLE opcao_questoes(
 
 CREATE TABLE fonte (
     id SERIAL PRIMARY KEY,
-    referencia TEXT UNIQUE NOT NULL
+    referencia TEXT UNIQUE NOT NULL,
+	url VARCHAR(255) UNIQUE NOT NULL
 );
 
 CREATE TABLE questoes (
