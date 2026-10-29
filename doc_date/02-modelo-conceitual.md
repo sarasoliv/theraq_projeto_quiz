@@ -8,7 +8,7 @@ Versão 1.0
 ***[Baixar DER em PDF] [02_conceitual_isabella_rodrygo_sara_yasmin.pdf](https://github.com/user-attachments/files/33519047/02_conceitual_isabella_rodrygo_sara_yasmin.pdf)***
 
 Versão 2.0
-***[Baixar DER em PDF] [02_conceitual_isabella_rodrygo_sara_yasmin_v2.pdf](https://github.com/user-attachments/files/34156672/02_conceitual_isabella_rodrygo_sara_yasmin_v2.pdf)***
+***[Baixar DER em PDF] [02_conceitual_isabella_rodrygo_sara_yasmin_v2.pdf](https://github.com/user-attachments/files/34157275/02_conceitual_isabella_rodrygo_sara_yasmin_v2.pdf)***
 
 ## Entidades
 
