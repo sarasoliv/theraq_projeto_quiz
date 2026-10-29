@@ -41,6 +41,15 @@ CREATE TABLE IF NOT EXISTS questoes_respondidas (
   data_resposta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS solucionar (
+  id_solucionar SERIAL PRIMARY KEY,
+  usuario_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
+  questao_id VARCHAR(100) NOT NULL REFERENCES questoes(id) ON DELETE CASCADE,
+  resposta_usuario VARCHAR(1) NOT NULL CHECK (resposta_usuario IN ('A','B','C','D','E')),
+  acerto BOOLEAN NOT NULL,
+  data_resposta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO fonte (id, referencia, url) VALUES 
 (1, 'Leveson, Nancy G., & Turner, Clark S. (1993). An Investigation of the Therac-25 Accidents. IEEE Computer', 'https://web.stanford.edu/class/cs240/old/sp2014/readings/therac-25.pdf'),
 (2, 'Leveson, Nancy G. (1995). Safeware: System Safety and Computers', 'https://mitpress.mit.edu/9780201631210/safeware/'),
