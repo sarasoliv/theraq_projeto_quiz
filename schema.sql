@@ -8,10 +8,14 @@ CREATE TABLE cadastro_usuario(
 );
 
 CREATE TABLE tabela_ranking(
-	id_jogador SERIAL PRIMARY KEY,
-	nome_jogador VARCHAR(50) NOT NULL,
+	id_ranking SERIAL PRIMARY KEY,
 	pontuacao_jogador SMALLINT NOT NULL,
-	data_jogado TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	data_jogado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	usuario_id INT NOT NULL,
+	questoes_id INT NOT NULL
+ 	
+	CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES cadastro_usuario(id_usuario) 
+	CONSTRAINT fk_questoes FOREIGN KEY (questoes_id) REFERENCES questoes(id) 
 );
 
 CREATE TABLE opcao_questoes(
@@ -37,7 +41,7 @@ CREATE TABLE questoes (
     dificuldade_nivel VARCHAR(50),
     fonte_id INT,
 	
-    FOREIGN KEY (fonte_id) REFERENCES fonte(id) 
+    CONSTRAINT fk_fonte FOREIGN KEY (fonte_id) REFERENCES fonte(id) 
 );
 
 CREATE TABLE questoes_respondidas(
