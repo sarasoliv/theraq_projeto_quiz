@@ -15,7 +15,7 @@ CREATE TABLE tabela_ranking(
 	questoes_id INT NOT NULL
  	
 	CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES cadastro_usuario(id_usuario) 
-	CONSTRAINT fk_questoes FOREIGN KEY (questoes_id) REFERENCES questoes(id) 
+	CONSTRAINT fk_questoes_respondidas FOREIGN KEY (questoes_id) REFERENCES questoes_respondidas(id_resposta) 
 );
 
 CREATE TABLE opcao_questoes(
