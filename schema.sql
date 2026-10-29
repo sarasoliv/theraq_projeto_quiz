@@ -215,7 +215,9 @@ INSERT INTO questoes (id, Enunciado, opcao_id, Resposta_correta, dificuldade_niv
 ('fact-098', 'Proponha a arquitetura de uma intertrava física independente para ser acoplada em um acelerador linear moderno.', 98, 'E', 'dificil', 2),
 ('fact-099', 'Que lição fundamental sobre a relação entre automação e responsabilidade humana o caso Therac-25 ensina?', 99, 'C', 'medio', 2),
 ('fact-100', 'Qual das alternativas abaixo descreve corretamente a falha de concorrência que ocorria na interface do Therac-25?', 100, 'D', 'dificil', 2);
+
 -- Sincroniza sequências quando os dados são carregados com IDs explícitos.
 SELECT setval(pg_get_serial_sequence('fonte','id'), COALESCE((SELECT MAX(id) FROM fonte),1));
 SELECT setval(pg_get_serial_sequence('opcao_questoes','id_opcao'), COALESCE((SELECT MAX(id_opcao) FROM opcao_questoes),1));
+
 COMMIT;
