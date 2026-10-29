@@ -36,12 +36,13 @@ CREATE TABLE fonte (
 CREATE TABLE questoes (
     id VARCHAR(100) PRIMARY KEY,
     enunciado TEXT NOT NULL,
-    opcao_id INT,
     resposta_correta CHAR(1),
     dificuldade_nivel VARCHAR(50),
     fonte_id INT,
+	opcao_id INT,
 	
     CONSTRAINT fk_fonte FOREIGN KEY (fonte_id) REFERENCES fonte(id) 
+	CONSTRAINT fk_opcao FOREIGN KEY (opcao_id) REFERENCES opcao_questoes(id_opcao)
 );
 
 CREATE TABLE questoes_respondidas(
