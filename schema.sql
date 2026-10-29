@@ -3,55 +3,56 @@
 BEGIN;
 
 CREATE TABLE IF NOT EXISTS cadastro_usuario (
-  id_usuario SERIAL PRIMARY KEY,
-  nome VARCHAR(50) NOT NULL UNIQUE
+	id_usuario SERIAL PRIMARY KEY,
+	nome VARCHAR(50) NOT NULL UNIQUE
 );
 CREATE TABLE IF NOT EXISTS tabela_ranking (
-  id_ranking SERIAL PRIMARY KEY,
-  usuario_id INTEGER REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
-  nome_jogador VARCHAR(50) NOT NULL,
-  pontuacao_jogador INTEGER NOT NULL CHECK (pontuacao_jogador >= 0),
-  total_acertos INTEGER NOT NULL DEFAULT 0 CHECK (total_acertos >= 0),
-  data_jogado TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  	id_ranking SERIAL PRIMARY KEY,
+  	usuario_id INTEGER REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
+	nome_jogador VARCHAR(50) NOT NULL,
+	pontuacao_jogador INTEGER NOT NULL CHECK (pontuacao_jogador >= 0),
+	total_acertos INTEGER NOT NULL DEFAULT 0 CHECK (total_acertos >= 0),
+	data_jogado TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE IF NOT EXISTS opcao_questoes (
-  id_opcao SERIAL PRIMARY KEY,
-  opcao_a TEXT NOT NULL, opcao_b TEXT NOT NULL, opcao_c TEXT NOT NULL,
-  opcao_d TEXT NOT NULL, opcao_e TEXT NOT NULL
+	id_opcao SERIAL PRIMARY KEY,
+	opcao_a TEXT NOT NULL, opcao_b TEXT NOT NULL, opcao_c TEXT NOT NULL,
+	opcao_d TEXT NOT NULL, opcao_e TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS fonte (
-  id SERIAL PRIMARY KEY,
-  referencia TEXT UNIQUE NOT NULL,
-  url VARCHAR(255) UNIQUE NOT NULL
+	id SERIAL PRIMARY KEY,
+	referencia TEXT UNIQUE NOT NULL,
+	url VARCHAR(255) UNIQUE NOT NULL
 );
 CREATE TABLE IF NOT EXISTS questoes (
-  id VARCHAR(100) PRIMARY KEY,
-  enunciado TEXT NOT NULL,
-  opcao_id INTEGER NOT NULL REFERENCES opcao_questoes(id_opcao),
-  resposta_correta CHAR(1) NOT NULL CHECK (resposta_correta IN ('A','B','C','D','E')),
-  dificuldade_nivel VARCHAR(50) NOT NULL,
-  fonte_id INTEGER REFERENCES fonte(id)
+	id VARCHAR(100) PRIMARY KEY,
+	enunciado TEXT NOT NULL,
+	opcao_id INTEGER NOT NULL REFERENCES opcao_questoes(id_opcao),
+	resposta_correta CHAR(1) NOT NULL CHECK (resposta_correta IN ('A','B','C','D','E')),
+	dificuldade_nivel VARCHAR(50) NOT NULL,
+	fonte_id INTEGER REFERENCES fonte(id)
 );
 CREATE TABLE IF NOT EXISTS questoes_respondidas (
-  id_resposta SERIAL PRIMARY KEY,
-  usuario_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
-  questao_id VARCHAR(100) NOT NULL REFERENCES questoes(id) ON DELETE CASCADE,
-  resposta_usuario VARCHAR(1) NOT NULL CHECK (resposta_usuario IN ('A','B','C','D','E')),
-  acerto BOOLEAN NOT NULL,
-  data_resposta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	id_resposta SERIAL PRIMARY KEY,
+	usuario_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
+	questao_id VARCHAR(100) NOT NULL REFERENCES questoes(id) ON DELETE CASCADE,
+	resposta_usuario VARCHAR(1) NOT NULL CHECK (resposta_usuario IN ('A','B','C','D','E')),
+	acerto BOOLEAN NOT NULL,
+	data_resposta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE IF NOT EXISTS solucionar (
-  id_solucionar SERIAL PRIMARY KEY,
-  usuario_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
-  resposta_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE
+	id_solucionar SERIAL PRIMARY KEY,
+	usuario_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
+	resposta_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS possui (
-  solucionar_id INT,
+	solucionar_id INT,
 	ranking_id	INT,
 	CONSTRAINT pk_possui PRIMARY KEY (solucionar_id,ranking_id),
 	CONSTRAINT fk_solucionar foreign key (solucionar_id) references solucionar(id_solucionar),
 	CONSTRAINT fk_ranking foreign key (ranking_id) references tabela_ranking(id_ranking)
 );
+
 
 INSERT INTO fonte (id, referencia, url) VALUES 
 (1, 'Leveson, Nancy G., & Turner, Clark S. (1993). An Investigation of the Therac-25 Accidents. IEEE Computer', 'https://web.stanford.edu/class/cs240/old/sp2014/readings/therac-25.pdf'),
