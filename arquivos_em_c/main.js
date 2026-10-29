@@ -1,4 +1,4 @@
-import { criarConfigQuiz, criarResultadoQuiz } from './quiz-structures.js';
+import { criarConfigQuiz, criarResultadoQuiz } from './struct.js';
 
 export function validarConfiguracaoQuiz({ nome, quantidade, dificuldade }) {
   const nome_usuario = String(nome ?? '').trim();
