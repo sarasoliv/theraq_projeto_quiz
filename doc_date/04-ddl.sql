@@ -25,60 +25,55 @@ BEGIN;
 
 CREATE DATABASE projeto_quiz_irsy;
 
-CREATE TABLE cadastro_usuario(
-	id_usuario SERIAL PRIMARY KEY NOT NULL,
-	nome VARCHAR(50) NOT NULL
+CREATE TABLE IF NOT EXISTS cadastro_usuario (
+  id_usuario SERIAL PRIMARY KEY,
+  nome VARCHAR(50) NOT NULL UNIQUE
 );
-
-CREATE TABLE tabela_ranking(
-	id_ranking SERIAL PRIMARY KEY,
-	pontuacao_jogador SMALLINT NOT NULL,
-	data_jogado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	usuario_id INT NOT NULL,
-	questoes_respondidas_id INT NOT NULL
- 	
-	CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES cadastro_usuario(id_usuario) 
-	CONSTRAINT fk_questoes_respondidas FOREIGN KEY (questoes_respondidas_id) REFERENCES questoes_respondidas(id_resposta) 
+CREATE TABLE IF NOT EXISTS tabela_ranking (
+  id_ranking SERIAL PRIMARY KEY,
+  usuario_id INTEGER REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
+  nome_jogador VARCHAR(50) NOT NULL,
+  pontuacao_jogador INTEGER NOT NULL CHECK (pontuacao_jogador >= 0),
+  total_acertos INTEGER NOT NULL DEFAULT 0 CHECK (total_acertos >= 0),
+  data_jogado TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
-CREATE TABLE opcao_questoes(
-	id_opcao SERIAL PRIMARY KEY,
-	opcao_a	TEXT NOT NULL,
-	opcao_b TEXT NOT NULL,
-	opcao_c	TEXT NOT NULL,
-	opcao_d	TEXT NOT NULL,
-	opcao_e	TEXT NOT NULL
+CREATE TABLE IF NOT EXISTS opcao_questoes (
+  id_opcao SERIAL PRIMARY KEY,
+  opcao_a TEXT NOT NULL, opcao_b TEXT NOT NULL, opcao_c TEXT NOT NULL,
+  opcao_d TEXT NOT NULL, opcao_e TEXT NOT NULL
 );
-
-CREATE TABLE fonte (
-    id SERIAL PRIMARY KEY,
-    referencia TEXT UNIQUE NOT NULL,
-	url VARCHAR(255) UNIQUE NOT NULL
+CREATE TABLE IF NOT EXISTS fonte (
+  id SERIAL PRIMARY KEY,
+  referencia TEXT UNIQUE NOT NULL,
+  url VARCHAR(255) UNIQUE NOT NULL
 );
-
-CREATE TABLE questoes (
-    id VARCHAR(100) PRIMARY KEY,
-    enunciado TEXT NOT NULL,
-    resposta_correta CHAR(1),
-    dificuldade_nivel VARCHAR(50),
-    fonte_id INT,
-	opcao_id INT,
-	
-    CONSTRAINT fk_fonte FOREIGN KEY (fonte_id) REFERENCES fonte(id) 
-	CONSTRAINT fk_opcao FOREIGN KEY (opcao_id) REFERENCES opcao_questoes(id_opcao)
+CREATE TABLE IF NOT EXISTS questoes (
+  id VARCHAR(100) PRIMARY KEY,
+  enunciado TEXT NOT NULL,
+  opcao_id INTEGER NOT NULL REFERENCES opcao_questoes(id_opcao),
+  resposta_correta CHAR(1) NOT NULL CHECK (resposta_correta IN ('A','B','C','D','E')),
+  dificuldade_nivel VARCHAR(50) NOT NULL,
+  fonte_id INTEGER REFERENCES fonte(id)
 );
-
-CREATE TABLE questoes_respondidas(
-	id_resposta SERIAL PRIMARY KEY,
-	resposta_usuario VARCHAR(1) NOT NULL,
-	acerto BOOLEAN NOT NULL, 
-	data_resposta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	usuario_id INT NOT NULL,
-	questao_id VARCHAR(100) NOT NULL,
-	
-	CONSTRAINT fk_usuario FOREIGN KEY(usuario_id) REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
-	CONSTRAINT fk_questao FOREIGN KEY(questao_id) REFERENCES questoes(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS questoes_respondidas (
+  id_resposta SERIAL PRIMARY KEY,
+  usuario_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
+  questao_id VARCHAR(100) NOT NULL REFERENCES questoes(id) ON DELETE CASCADE,
+  resposta_usuario VARCHAR(1) NOT NULL CHECK (resposta_usuario IN ('A','B','C','D','E')),
+  acerto BOOLEAN NOT NULL,
+  data_resposta TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
+CREATE TABLE IF NOT EXISTS solucionar (
+  id_solucionar SERIAL PRIMARY KEY,
+  usuario_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
+  resposta_id INTEGER NOT NULL REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS possui (
+  solucionar_id INT,
+	ranking_id	INT,
+	CONSTRAINT pk_possui PRIMARY KEY (solucionar_id,ranking_id),
+	CONSTRAINT fk_solucionar foreign key (solucionar_id) references solucionar(id_solucionar),
+	CONSTRAINT fk_ranking foreign key (ranking_id) references tabela_ranking(id_ranking)
+);
 
 COMMIT;
