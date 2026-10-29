@@ -12,10 +12,10 @@ CREATE TABLE tabela_ranking(
 	pontuacao_jogador SMALLINT NOT NULL,
 	data_jogado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	usuario_id INT NOT NULL,
-	questoes_id INT NOT NULL
+	questoes_respondidas_id INT NOT NULL
  	
 	CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES cadastro_usuario(id_usuario) 
-	CONSTRAINT fk_questoes_respondidas FOREIGN KEY (questoes_id) REFERENCES questoes_respondidas(id_resposta) 
+	CONSTRAINT fk_questoes_respondidas FOREIGN KEY (questoes_respondidas_id) REFERENCES questoes_respondidas(id_resposta) 
 );
 
 CREATE TABLE opcao_questoes(
