@@ -16,14 +16,13 @@ BEGIN;
 
 -- TODO: INSERT
 
-
--- 1. Inserção das Fontes
-INSERT INTO fontes (id, referencia) VALUES 
+--Inserção das Fontes
+INSERT INTO fonte (id, referencia) VALUES 
 (1, 'Leveson, Nancy G., & Turner, Clark S. (1993). An Investigation of the Therac-25 Accidents. IEEE Computer'),
 (2, 'Leveson, Nancy G. (1995). Safeware: System Safety and Computers'),
 (3, 'U.S. Food and Drug Administration (FDA) / CDRH (1986–1987)');
 
--- 2. Inserção das Opções
+--Inserção das Opções
 INSERT INTO opcao_questoes (Opcao_a, Opcao_b, Opcao_c, Opcao_d, Opcao_e) VALUES
 ('Um sistema de diagnóstico por imagem para detecção de tumores.', 'Um acelerador linear de elétrons utilizado em radioterapia para destruição de tecidos cancerígenos.', 'Um equipamento de ressonância magnética de alta precisão.', 'Um tomógrafo computadorizado com emissão de pósitrons (PET-Scan).', 'Um robô cirúrgico para procedimentos minimamente invasivos.'),
 ('General Electric Medical Systems Canada.', 'Siemens Healthineers Canada.', 'Bombardier Medical Robotics.', 'Atomic Energy of Canada Limited (AECL).', 'Philips Medical Systems Canada.'),
@@ -32,7 +31,7 @@ INSERT INTO opcao_questoes (Opcao_a, Opcao_b, Opcao_c, Opcao_d, Opcao_e) VALUES
 ('Certo', 'Errado', 'N/A', 'N/A', 'N/A'),
 ('Certo', 'Errado', 'N/A', 'N/A', 'N/A'),
     
--- 3. Inserção das Questões (IDs fact-001 a fact-006, incluindo Certo/Errado)
+--Inserção das Questões (IDs fact-001 a fact-006, incluindo Certo/Errado)
 INSERT INTO questoes (id, Enunciado, opcao_id, Resposta_correta, dificuldade_nivel, fonte_id) VALUES
 ('fact-001', 'O que era exatamente o Therac-25 e qual era a sua finalidade primária na medicina?', 1, 'B', 'facil', 1),
 ('fact-002', 'Qual foi a empresa canadense responsável pelo projeto e fabricação do Therac-25?', 2, 'D', 'facil', 1),
@@ -113,7 +112,7 @@ SELECT
     f.id AS fonte_id,
     f.referencia, 
     COUNT(q.id) AS total_perguntas
-FROM fontes f
+FROM fonte f
 JOIN questoes q ON f.id = q.fonte_id
 GROUP BY f.id, f.referencia
 ORDER BY total_perguntas DESC;
@@ -124,7 +123,7 @@ SELECT
     f.id AS fonte_id,
     f.referencia, 
     COUNT(q.id) AS quantidade_perguntas
-FROM fontes f
+FROM fonte f
 JOIN questoes q ON f.id = q.fonte_id
 GROUP BY f.id, f.referencia
 HAVING COUNT(q.id) > 1
