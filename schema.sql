@@ -47,11 +47,11 @@ CREATE TABLE questoes (
 
 CREATE TABLE questoes_respondidas(
 	id_resposta SERIAL PRIMARY KEY,
-	usuario_id INT NOT NULL,
-	questao_id VARCHAR(100) NOT NULL, -- Corrigido para VARCHAR para bater com a tabela questoes
 	resposta_usuario VARCHAR(1) NOT NULL,
 	acerto BOOLEAN NOT NULL, 
 	data_resposta TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	usuario_id INT NOT NULL,
+	questao_id VARCHAR(100) NOT NULL,
 	
 	CONSTRAINT fk_usuario FOREIGN KEY(usuario_id) REFERENCES cadastro_usuario(id_usuario) ON DELETE CASCADE,
 	CONSTRAINT fk_questao FOREIGN KEY(questao_id) REFERENCES questoes(id) ON DELETE CASCADE
