@@ -52,6 +52,8 @@ CREATE TABLE questoes_respondidas(
 	CONSTRAINT fk_questao FOREIGN KEY(questao_id) REFERENCES questoes(id) ON DELETE CASCADE
 );
 
+select * from fonte;
+
 INSERT INTO fonte (id, referencia, url) VALUES 
 (1, 'Leveson, Nancy G., & Turner, Clark S. (1993). An Investigation of the Therac-25 Accidents. IEEE Computer', 'https://web.stanford.edu/class/cs240/old/sp2014/readings/therac-25.pdf'),
 (2, 'Leveson, Nancy G. (1995). Safeware: System Safety and Computers', 'https://mitpress.mit.edu/9780201631210/safeware/'),
@@ -77,7 +79,7 @@ INSERT INTO questoes (id, Enunciado, opcao_id, Resposta_correta, dificuldade_niv
 ('fact-015', 'Quem foi a pesquisadora de segurança de software responsável pelo relatório clássico que analisou o caso?', 15, 'D', 'facil', 1),
 ('fact-016', 'Que componente físico crucial de segurança (intertrava mecânica) foi removido no Therac-25?', 16, 'C', 'dificil', 1),
 ('fact-017', 'A interface do operador utilizava que tipo de terminal para entrada de dados e comandos?', 17, 'A', 'dificil', 1),
-('fact-018', 'O que acontecía quando o operador pressionava a tecla \'P\' (Proceed) após o erro "Malfunction 5"?', 18, 'E', 'dificil', 1),
+('fact-018', 'O que acontecía quando o operador pressionava a tecla \P'' ''(Proceed) após o erro "Malfunction 5"?', 18, 'E', 'dificil', 1),
 ('fact-019', 'Qual era a reação inicial dos técnicos do fabricante quando os hospitais notificavam suspeitas de overdose?', 19, 'B', 'medio', 1),
 ('fact-020', 'Qual órgão regulador governamental dos EUA interveio no caso exigindo planos de ação corretiva?', 20, 'D', 'facil', 3),
 ('fact-021', 'O código de software do Therac-25 foi testado de forma independente antes de ser colocado no mercado comercial?', 21, 'D', 'medio', 1),
@@ -212,5 +214,4 @@ INSERT INTO opcao_questoes (Opcao_a, Opcao_b, Opcao_c, Opcao_d, Opcao_e) VALUES
 ('Kennestone (Georgia), Hamilton (Ontário), Tyler (Texas) e Yakima (Washington).', 'Nova York (EUA), Londres (Reino Unido), Paris (França) e Tóquio (Japão).', 'São Paulo (Brasil), Buenos Aires (Argentina) e Santiago (Chile).', 'Toronto (Canadá), Ottawa (Canadá) e Quebec (Canadá) exclusivamente.', 'Berlim (Alemanha), Roma (Itália) e Madri (Espanha).'),
 ('Impediu o computador de ligar quando conectado à rede elétrica.', 'Permitiu que a tarefa de interface do usuário alterasse variáveis de configuração críticas enquanto a tarefa de controle do feixe já as lia/processava.', 'Fez a memória RAM apagar todas as variáveis a cada 5 minutos.', 'Duplicou o tamanho do arquivo executável do software.', 'Causou o travamento total da CPU ao tentar ler arquivos em disquete.'),
 ('Determinou o banimento eterno de qualquer computador em equipamentos médicos.', 'Multou apenas os operadores do hospital sem responsabilizar a fábrica.', 'Exigiu a elaboração e execução de Planos de Ação Corretiva (CAP), incluindo mudanças estruturais de software e instalação de intertravas mecânicas.', 'Aprovou a máquina para venda livre em farmácias e postos de saúde.', 'Encerrou as atividades do órgão regulador por conflito de interesses.'),
-('Porque foi desenhada intencionalmente para permitir o ajuste fino durante o tratamento.', 'Porque não havia checagem de concorrência que impedisse o operador de editar a tela durante o ciclo de posicionamento dos magnéticos (que levava cerca de 8 segundos).', 'Para economizar energia elétrica do circuito de refrigeração.', 'Porque a rotina operava em um computador separado instalado na recepção do hospital.', 'Para permitir o cancelamento imediato de comandos digitados por engano.'),
-('Significa colocar etiquetas coloridas de aviso no gabinete.'); -- Linha corrigida e fechada corretamente
+('Porque foi desenhada intencionalmente para permitir o ajuste fino durante o tratamento.', 'Porque não havia checagem de concorrência que impedisse o operador de editar a tela durante o ciclo de posicionamento dos magnéticos (que levava cerca de 8 segundos).', 'Para economizar energia elétrica do circuito de refrigeração.', 'Porque a rotina operava em um computador separado instalado na recepção do hospital.', 'Para permitir o cancelamento imediato de comandos digitados por engano.')
