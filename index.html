@@ -25,9 +25,54 @@
           </div>
         </div>
 
-        <div class="status-pill" id="status-pill">
-          <span>Progresso</span>
-          <strong id="topbar-status">0 / 0</strong>
+        <div class="topbar-actions">
+          <div class="accessibility-panel" aria-label="Ferramentas de acessibilidade">
+            <div class="accessibility-group">
+              <span class="accessibility-label">Tema</span>
+              <div class="segmented-control">
+                <button class="access-btn is-active" type="button" data-theme="dark">Escuro</button>
+                <button class="access-btn" type="button" data-theme="light">Claro</button>
+              </div>
+            </div>
+
+            <div class="accessibility-group">
+              <span class="accessibility-label">Texto</span>
+              <div class="icon-control">
+                <button class="access-btn compact" type="button" data-font="decrease" aria-label="Diminuir texto">A−</button>
+                <button class="access-btn compact" type="button" data-font="increase" aria-label="Aumentar texto">A+</button>
+              </div>
+            </div>
+
+            <div class="accessibility-group">
+              <span class="accessibility-label">Contraste</span>
+              <button class="access-btn" type="button" id="high-contrast-toggle">Alto contraste</button>
+            </div>
+
+            <div class="accessibility-group">
+              <span class="accessibility-label">Daltonismo</span>
+              <select id="daltonism-control" aria-label="Filtro de daltonismo">
+                <option value="none">Nenhum</option>
+                <option value="protanopia">Protanopia</option>
+                <option value="deuteranopia">Deuteranopia</option>
+                <option value="tritanopia">Tritanopia</option>
+              </select>
+            </div>
+
+            <div class="accessibility-group volume-group">
+              <span class="accessibility-label">Volume</span>
+              <input id="volume-control" type="range" min="0" max="1" step="0.05" value="0.7" aria-label="Controle de volume" />
+            </div>
+
+            <label class="toggle-row" for="reduced-motion-toggle">
+              <input id="reduced-motion-toggle" type="checkbox" />
+              <span>Reduzir animação</span>
+            </label>
+          </div>
+
+          <div class="status-pill" id="status-pill">
+            <span>Progresso</span>
+            <strong id="topbar-status">0 / 0</strong>
+          </div>
         </div>
       </header>
 

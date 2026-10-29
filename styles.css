@@ -14,6 +14,81 @@
   --danger: #ff7a7a;
   --cyan: rgba(122, 217, 255, 0.08);
   --shadow: 0 0 0 1px rgba(122, 217, 255, 0.55), 0 0 18px rgba(88, 217, 255, 0.18);
+  --font-scale: 1;
+}
+
+body.theme-light {
+  --bg-900: #edf6ff;
+  --bg-800: #dfeefe;
+  --bg-700: #d3ebff;
+  --accent: #0057c2;
+  --accent-soft: #0f4ea3;
+  --text: #10263d;
+  --muted: #49607a;
+  --success: #0d7d48;
+  --warning: #bf7c00;
+  --danger: #ba2d2d;
+  --cyan: rgba(14, 85, 168, 0.08);
+  --shadow: 0 0 0 1px rgba(71, 118, 196, 0.28), 0 18px 45px rgba(50, 72, 96, 0.1);
+}
+
+body.high-contrast {
+  --bg-900: #000000;
+  --bg-800: #111111;
+  --bg-700: #1b1b1b;
+  --accent: #ffff00;
+  --accent-soft: #ffff66;
+  --text: #ffffff;
+  --muted: #f4f4f4;
+  --success: #00ff00;
+  --warning: #ffbf00;
+  --danger: #ff3333;
+  --cyan: rgba(255, 255, 255, 0.08);
+  --shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), 0 0 22px rgba(255, 255, 255, 0.08);
+}
+
+body.theme-light.high-contrast {
+  --bg-900: #f9fbff;
+  --bg-800: #edf4ff;
+  --bg-700: #dfefff;
+  --accent: #0e3d91;
+  --accent-soft: #1d4fa8;
+  --text: #0d1320;
+  --muted: #1e2f4d;
+  --success: #0a6b2c;
+  --warning: #8a5b00;
+  --danger: #a11d1d;
+  --cyan: rgba(14, 61, 145, 0.08);
+  --shadow: 0 0 0 2px rgba(14, 61, 145, 0.8), 0 18px 35px rgba(18, 41, 76, 0.12);
+}
+
+body.daltonism-protanopia {
+  filter: hue-rotate(-25deg) saturate(1.2) contrast(1.08);
+}
+
+body.daltonism-deuteranopia {
+  filter: hue-rotate(-18deg) saturate(1.1) contrast(1.06);
+}
+
+body.daltonism-tritanopia {
+  filter: hue-rotate(28deg) saturate(1.2) contrast(1.08);
+}
+
+body.reduced-motion *,
+body.reduced-motion *::before,
+body.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-size: calc(1rem * var(--font-scale));
 }
 
 * { 
@@ -51,6 +126,18 @@ button, input { font: inherit; }
   z-index: 0;
 }
 
+body.theme-light .page-bg {
+  background: radial-gradient(circle at top, rgba(14, 61, 145, 0.12), transparent 32%),
+              radial-gradient(circle at bottom right, rgba(22, 91, 180, 0.08), transparent 30%),
+              linear-gradient(180deg, #f4f9ff 0%, #eaf2ff 100%);
+}
+
+body.theme-light.high-contrast .page-bg {
+  background: radial-gradient(circle at top, rgba(14, 61, 145, 0.14), transparent 30%),
+              radial-gradient(circle at bottom right, rgba(14, 61, 145, 0.08), transparent 28%),
+              linear-gradient(180deg, #fdfefe 0%, #eef5ff 100%);
+}
+
 /* ==========================================================
    Container principal e header
    ========================================================== */
@@ -65,6 +152,120 @@ button, input { font: inherit; }
   backdrop-filter: blur(8px);
 }
 
+body.theme-light .app-shell,
+body.theme-light .panel,
+body.theme-light .intro-card,
+body.theme-light .final-card,
+body.theme-light .question-card,
+body.theme-light .options-panel,
+body.theme-light .room-card,
+body.theme-light .accessibility-panel,
+body.theme-light .status-pill,
+body.theme-light .ranking-list li,
+body.theme-light .ranking-box li,
+body.theme-light .option-item,
+body.theme-light .field-group input {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(14, 85, 168, 0.18);
+  color: var(--text);
+}
+
+body.theme-light.high-contrast .app-shell,
+body.theme-light.high-contrast .panel,
+body.theme-light.high-contrast .intro-card,
+body.theme-light.high-contrast .final-card,
+body.theme-light.high-contrast .question-card,
+body.theme-light.high-contrast .options-panel,
+body.theme-light.high-contrast .room-card,
+body.theme-light.high-contrast .accessibility-panel,
+body.theme-light.high-contrast .status-pill,
+body.theme-light.high-contrast .ranking-list li,
+body.theme-light.high-contrast .ranking-box li,
+body.theme-light.high-contrast .option-item,
+body.theme-light.high-contrast .field-group input,
+body.theme-light.high-contrast .segmented-control,
+body.theme-light.high-contrast .icon-control,
+body.theme-light.high-contrast #daltonism-control {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(14, 61, 145, 0.8);
+  color: #0d1320;
+  box-shadow: 0 0 0 2px rgba(14, 61, 145, 0.18);
+}
+
+body.theme-light .accessibility-panel,
+body.theme-light .status-pill,
+body.theme-light .room-card,
+body.theme-light .panel,
+body.theme-light .option-item,
+body.theme-light .ranking-list li,
+body.theme-light .ranking-box li {
+  box-shadow: 0 0 0 1px rgba(71, 118, 196, 0.12), 0 16px 30px rgba(35, 52, 71, 0.08);
+}
+
+body.theme-light #daltonism-control,
+body.theme-light .field-group input,
+body.theme-light .segmented-control,
+body.theme-light .icon-control {
+  background: rgba(218, 233, 255, 0.88);
+  color: var(--text);
+  border-color: rgba(14, 85, 168, 0.18);
+}
+
+body.theme-light.high-contrast .access-btn,
+body.theme-light.high-contrast #daltonism-control,
+body.theme-light.high-contrast .field-group input,
+body.theme-light.high-contrast .segmented-control,
+body.theme-light.high-contrast .icon-control,
+body.theme-light.high-contrast .toggle-row,
+body.theme-light.high-contrast .status-pill,
+body.theme-light.high-contrast .accessibility-label,
+body.theme-light.high-contrast .eyebrow,
+body.theme-light.high-contrast .option-text,
+body.theme-light.high-contrast .player-name,
+body.theme-light.high-contrast .score,
+body.theme-light.high-contrast .score-box span,
+body.theme-light.high-contrast .input-label {
+  color: #0d1320;
+}
+
+body.theme-light.high-contrast .status-pill,
+body.theme-light.high-contrast .accessibility-panel,
+body.theme-light.high-contrast .segmented-control,
+body.theme-light.high-contrast .icon-control,
+body.theme-light.high-contrast .field-group input,
+body.theme-light.high-contrast #daltonism-control,
+body.theme-light.high-contrast .option-item,
+body.theme-light.high-contrast .ranking-list li,
+body.theme-light.high-contrast .ranking-box li {
+  border-color: rgba(14, 61, 145, 0.8);
+}
+
+body.theme-light.high-contrast .primary-btn {
+  background: linear-gradient(135deg, #0e3d91, #1d4fa8);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+body.theme-light.high-contrast .secondary-btn {
+  background: #ffffff;
+  color: #0d1320;
+  border-color: rgba(14, 61, 145, 0.8);
+}
+
+body.theme-light.high-contrast .brand-mark {
+  background: linear-gradient(135deg, #0e3d91, #1d4fa8);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+body.theme-light.high-contrast .access-btn.is-active,
+body.theme-light.high-contrast .access-btn:hover,
+body.theme-light.high-contrast .access-btn:focus-visible {
+  background: #0e3d91;
+  color: #ffffff;
+  border-color: #0e3d91;
+}
+
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -73,6 +274,105 @@ button, input { font: inherit; }
   padding: 24px 32px 16px;
   border-bottom: 1px solid rgba(122, 217, 255, 0.18);
 }
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.accessibility-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding: 10px 12px;
+  border: 1px solid rgba(122, 217, 255, 0.25);
+  background: rgba(122, 217, 255, 0.04);
+  border-radius: 18px;
+}
+
+.accessibility-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.accessibility-label {
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.segmented-control,
+.icon-control {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: rgba(8, 19, 30, 0.4);
+  border-radius: 12px;
+}
+
+.access-btn {
+  appearance: none;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.access-btn.is-active,
+.access-btn:hover,
+.access-btn:focus-visible {
+  background: rgba(122, 217, 255, 0.12);
+  border-color: rgba(122, 217, 255, 0.32);
+}
+
+.access-btn.compact {
+  min-width: 42px;
+  padding-inline: 8px;
+}
+
+#daltonism-control {
+  border: 1px solid rgba(122, 217, 255, 0.35);
+  border-radius: 10px;
+  background: rgba(6, 17, 28, 0.85);
+  color: var(--text);
+  padding: 8px 10px;
+  min-width: 130px;
+}
+
+.volume-group {
+  min-width: 126px;
+}
+
+#volume-control {
+  width: 110px;
+  accent-color: var(--accent);
+}
+
+.toggle-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 0.8rem;
+}
+
+.toggle-row input {
+  accent-color: var(--accent);
+}
+
 .brand-block, .room-actions, .button-stack, .score-box {
   display: flex;
   align-items: center;
