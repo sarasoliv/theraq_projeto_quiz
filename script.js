@@ -20,7 +20,13 @@ const els = {
   finalScore: document.getElementById('final-score'),
   finalRankingList: document.getElementById('final-ranking-list'),
   sessionRankingList: document.getElementById('session-ranking-list'),
-  statusPill: document.getElementById('status-pill')
+  statusPill: document.getElementById('status-pill'),
+  themeButtons: document.querySelectorAll('[data-theme]'),
+  fontButtons: document.querySelectorAll('[data-font]'),
+  highContrastToggle: document.getElementById('high-contrast-toggle'),
+  daltonismControl: document.getElementById('daltonism-control'),
+  reducedMotionToggle: document.getElementById('reduced-motion-toggle'),
+  volumeControl: document.getElementById('volume-control')
 };
 
 // ==========================================================
@@ -315,9 +321,78 @@ els.finalButton.addEventListener('click', () => {
   showScreen('intro');
 });
 
+function initializeAccessibilityControls() {
+  const body = document.body;
+  let fontScale = 1;
+
+  const applyTheme = (theme) => {
+    const isLight = theme === 'light';
+    body.classList.toggle('theme-light', isLight);
+    els.themeButtons.forEach((button) => {
+      const active = button.dataset.theme === theme;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+  };
+
+  const applyContrast = (enabled) => {
+    body.classList.toggle('high-contrast', enabled);
+    els.highContrastToggle.classList.toggle('is-active', enabled);
+    els.highContrastToggle.setAttribute('aria-pressed', String(enabled));
+  };
+
+  const applyDaltonism = (mode) => {
+    body.classList.remove('daltonism-protanopia', 'daltonism-deuteranopia', 'daltonism-tritanopia');
+    if (mode !== 'none') {
+      body.classList.add(`daltonism-${mode}`);
+    }
+  };
+
+  const applyReducedMotion = (enabled) => {
+    body.classList.toggle('reduced-motion', enabled);
+  };
+
+  els.themeButtons.forEach((button) => {
+    button.addEventListener('click', () => applyTheme(button.dataset.theme));
+  });
+
+  els.fontButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const direction = button.dataset.font;
+      fontScale = direction === 'increase' ? Math.min(1.25, fontScale + 0.1) : Math.max(0.85, fontScale - 0.1);
+      document.documentElement.style.setProperty('--font-scale', fontScale.toFixed(2));
+    });
+  });
+
+  els.highContrastToggle.addEventListener('click', () => {
+    const enabled = !body.classList.contains('high-contrast');
+    applyContrast(enabled);
+  });
+
+  els.daltonismControl.addEventListener('change', (event) => {
+    applyDaltonism(event.target.value);
+  });
+
+  els.reducedMotionToggle.addEventListener('change', (event) => {
+    applyReducedMotion(event.target.checked);
+  });
+
+  els.volumeControl.addEventListener('input', (event) => {
+    const value = Number(event.target.value);
+    event.target.style.setProperty('--volume', String(value));
+    document.body.style.setProperty('--volume-level', value.toFixed(2));
+  });
+
+  applyTheme('dark');
+  applyContrast(false);
+  applyDaltonism('none');
+  applyReducedMotion(false);
+}
+
 showScreen('intro');
 renderSidebarRanking();
 updateTopbar();
+initializeAccessibilityControls();
 
 els.playerNameInput.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
