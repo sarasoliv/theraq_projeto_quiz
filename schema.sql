@@ -61,7 +61,7 @@ INSERT INTO fonte (id, referencia, url) VALUES
 (4, 'Baase, Sara. (2008). A Gift of Fire / Códigos de Ética IEEE/ACM', 'https://www.ieee.org/about/corporate/governance/code-of-ethics.html'),
 (5, 'Física Médica, Dosimetria e Radiobiologia', 'https://www.aapm.org/pubs/reports/');
 
-INSERT INTO opcao_questoes (Opcao_a, Opcao_b, Opcao_c, Opcao_d, Opcao_e) VALUES
+INSERT INTO opcao_questoes (opcao_a, opcao_b, opcao_c, opcao_d, opcao_e) VALUES
 ('Um sistema de diagnóstico por imagem para detecção de tumores.', 'Um acelerador linear de elétrons utilizado em radioterapia para destruição de tecidos cancerígenos.', 'Um equipamento de ressonância magnética de alta precisão.', 'Um tomógrafo computadorizado com emissão de pósitrons (PET-Scan).', 'Um robô cirúrgico para procedimentos minimamente invasivos.')
 ('General Electric Medical Systems Canada.', 'Siemens Healthineers Canada.', 'Bombardier Medical Robotics.', 'Atomic Energy of Canada Limited (AECL).', 'Philips Medical Systems Canada.'),
 ('985 e 98.', '95 e 98.', '99 e 99.', '998 e 00.', '980 e 98.'),
