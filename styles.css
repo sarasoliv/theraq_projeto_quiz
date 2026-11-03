@@ -218,7 +218,8 @@ body.theme-light .status-pill,
 body.theme-light .ranking-list li,
 body.theme-light .ranking-box li,
 body.theme-light .option-item,
-body.theme-light .field-group input {
+body.theme-light .field-group input,
+body.theme-light .field-group select {
   background: rgba(255, 255, 255, 0.72);
   border-color: rgba(14, 85, 168, 0.18);
   color: var(--text);
@@ -258,6 +259,7 @@ body.theme-light .ranking-box li {
 
 body.theme-light #daltonism-control,
 body.theme-light .field-group input,
+body.theme-light .field-group select,
 body.theme-light .segmented-control,
 body.theme-light .icon-control {
   background: rgba(218, 233, 255, 0.88);
@@ -576,17 +578,34 @@ h1, h2, h3, p { margin: 0; }
   margin-bottom: 12px;
   font-size: 0.92rem;
 }
-.field-group input {
+.field-group input,
+.field-group select {
   width: 100%;
-  padding: 18px 20px;
+  min-height: 56px;
+  padding: 16px 20px;
   border-radius: 16px;
   border: 1px solid rgba(122, 217, 255, 0.45);
   background: rgba(6, 17, 28, 0.95);
   color: var(--text);
   outline: none;
-  font-size: 1rem;
+  font-size: 1.02rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
-.field-group input:focus {
+
+.field-group select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--accent-soft) 50%),
+    linear-gradient(135deg, var(--accent-soft) 50%, transparent 50%);
+  background-position: calc(100% - 20px) calc(50% - 3px), calc(100% - 14px) calc(50% - 3px);
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 46px;
+  cursor: pointer;
+}
+
+.field-group input:focus,
+.field-group select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px rgba(130, 243, 255, 0.12);
 }
