@@ -73,6 +73,17 @@ const state = {
   score: 0
 };
 
+const answerAudio = {
+  correct: new Audio('acerto.mp3'),
+  wrong: new Audio('errou.mp3')
+};
+
+function playAnswerSound(isCorrect) {
+  const audio = isCorrect ? answerAudio.correct : answerAudio.wrong;
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+}
+
 // ==========================================================
 // Armazenamento local do ranking
 // ==========================================================
@@ -307,7 +318,14 @@ els.confirmButton.addEventListener('click', () => {
     return;
   }
 
-  if (state.selectedAnswerIndex === questions[state.currentQuestionIndex].correctIndex) state.score += 1;
+  const isCorrectAnswer = state.selectedAnswerIndex === questions[state.currentQuestionIndex].correctIndex;
+  if (isCorrectAnswer) {
+    state.score += 1;
+    playAnswerSound(true);
+  } else {
+    playAnswerSound(false);
+  }
+
   state.answered = true;
   showAnswerFeedback();
 });
