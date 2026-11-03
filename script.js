@@ -12,6 +12,7 @@ const els = {
   confirmButton: document.getElementById('confirm-answer'),
   finalButton: document.getElementById('play-again'),
   playerNameInput: document.getElementById('player-name'),
+  difficultySelect: document.getElementById('difficulty-select'),
   questionText: document.getElementById('question-text'),
   topbarStatus: document.getElementById('topbar-status'),
   answersContainer: document.getElementById('answers-container'),
@@ -36,20 +37,35 @@ let questions = [];
 
 // Função para buscar as perguntas do banco SQL assim que a página abrir
 async function carregarPerguntasDoBanco() {
+  const selectedDifficulty = getSelectedDifficulty();
+
   els.startQuizButton.disabled = true;
   els.startQuizButton.textContent = 'Carregando perguntas...';
   try {
-    const resposta = await fetch('/api/perguntas');
+    const url = new URL('/api/perguntas', window.location.origin);
+    if (selectedDifficulty && selectedDifficulty !== 'todas') {
+      url.searchParams.set('dificuldade', selectedDifficulty);
+    }
+
+    const resposta = await fetch(url);
     if (!resposta.ok) throw new Error('Erro ao carregar perguntas do banco.');
     const dados = await resposta.json();
-    questions = dados.map((item) => ({
-      id: item.id,
-      question: item.enunciado,
-      options: item.alternativas,
-      correctIndex: ['A', 'B', 'C', 'D', 'E'].indexOf(String(item.resposta_correta).toUpperCase()),
-      explanation: item.explicacao || `Fonte: ${item.referencia || 'material de referência'}.`
-    })).filter((item) => item.question && item.options.length >= 2 && item.correctIndex >= 0);
-    if (!questions.length) throw new Error('O banco não retornou perguntas válidas.');
+    questions = dados
+      .map((item) => ({
+        id: item.id,
+        question: item.enunciado,
+        options: item.alternativas,
+        correctIndex: ['A', 'B', 'C', 'D', 'E'].indexOf(String(item.resposta_correta).toUpperCase()),
+        explanation: item.explicacao || `Fonte: ${item.referencia || 'material de referência'}.`,
+        difficulty: String(item.dificuldade_nivel || '').toLowerCase()
+      }))
+      .filter((item) => {
+        if (selectedDifficulty === 'todas') return item.question && item.options.length >= 2 && item.correctIndex >= 0;
+        const normalizedDifficulty = item.difficulty.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return normalizedDifficulty === selectedDifficulty && item.question && item.options.length >= 2 && item.correctIndex >= 0;
+      });
+
+    if (!questions.length) throw new Error('O banco não retornou perguntas válidas para a dificuldade selecionada.');
     els.startQuizButton.disabled = false;
     els.startQuizButton.textContent = 'Começar quiz';
     updateTopbar();
@@ -57,7 +73,7 @@ async function carregarPerguntasDoBanco() {
     console.error('Erro ao buscar perguntas:', erro);
     els.startQuizButton.textContent = 'Tentar carregar novamente';
     els.startQuizButton.disabled = false;
-    alert('Não foi possível carregar as perguntas do banco. Confira DATABASE_URL e execute schema.sql.');
+    alert('Não foi possível carregar as perguntas do banco. Confira DATABASE_URL, execute schema.sql e selecione uma dificuldade válida.');
   }
 }
 window.addEventListener('DOMContentLoaded', carregarPerguntasDoBanco);
@@ -74,9 +90,13 @@ const state = {
 };
 
 const answerAudio = {
-  correct: new Audio('acerto.mp3'),
+  correct: new Audio('acertou.mp3'),
   wrong: new Audio('errou.mp3')
 };
+
+function getSelectedDifficulty() {
+  return els.difficultySelect?.value || 'medio';
+}
 
 function playAnswerSound(isCorrect) {
   const audio = isCorrect ? answerAudio.correct : answerAudio.wrong;
@@ -306,6 +326,7 @@ function startQuiz() {
 // ==========================================================
 // Eventos e inicialização
 // ==========================================================
+els.difficultySelect.addEventListener('change', carregarPerguntasDoBanco);
 els.startQuizButton.addEventListener('click', startQuiz);
 els.confirmButton.addEventListener('click', () => {
   if (state.selectedAnswerIndex === null) {
