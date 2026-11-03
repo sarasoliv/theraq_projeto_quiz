@@ -5,7 +5,7 @@ module.exports = async function handler(request, response) {
   if (!process.env.DATABASE_URL) return response.status(503).json({ error: "DATABASE_URL não configurada." });
   try {
     pool ||= new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
-    const requestUrl = new URL(request.url, "https://example.com");
+    const requestUrl = new URL(request.url, "postgresql://postgres:RjhnQBHp7sY8CMyH@db.zwsabtozrjnpmhjiidmd.supabase.co:5432/postgres");
     const dificuldade = normalizarDificuldade(requestUrl.searchParams.get("dificuldade"));
 
     let query = `
