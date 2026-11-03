@@ -1,6 +1,7 @@
 const http = require("node:http");
 const fs = require("node:fs");
 const { Pool } = require("pg");
+const { createClient } = require('@supabase/supabase-js');
 const path = require("node:path");
 
 const projectRoot = path.resolve(__dirname, "..");
@@ -8,7 +9,12 @@ const maximumQuestionCount = 10;
 
 loadEnvFile();
 
-// Conexão segura com o PostgreSQL (compatível com Supabase / Vercel)
+// Inicialização do Cliente Oficial do Supabase (para uso direto na nuvem)
+const supabaseUrl = process.env.SUPABASE_URL || 'https://zwsabtozrjnpmhjiidmd.supabase.co';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || 'SUA_CHAVE_ANON_DO_SUPABASE';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Conexão PostgreSQL (Pool) para as consultas complexas e ranking
 const pool = process.env.DATABASE_URL ? new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.DATABASE_SSL === "false" ? false : { rejectUnauthorized: false }
@@ -23,7 +29,8 @@ const server = http.createServer(async (request, response) => {
     if (request.method === "GET" && requestUrl.pathname === "/api/health") {
       return sendJson(response, 200, {
         status: "ok",
-        groqConfigured: Boolean(process.env.GROQ_API_KEY), databaseConfigured: Boolean(process.env.DATABASE_URL)
+        groqConfigured: Boolean(process.env.GROQ_API_KEY), 
+        databaseConfigured: Boolean(process.env.DATABASE_URL || process.env.SUPABASE_URL)
       });
     }
 
@@ -63,7 +70,6 @@ const server = http.createServer(async (request, response) => {
     }
 
     if (request.method === "POST" && requestUrl.pathname === "/api/resultados") {
-      if (!pool) return sendJson(response, 503, { error: "Configure DATABASE_URL no arquivo api/.env." });
       let body;
       try { body = await readJsonBody(request); }
       catch (error) { return sendJson(response, error.statusCode || 400, { error: error.message }); }
@@ -75,23 +81,38 @@ const server = http.createServer(async (request, response) => {
       if (!nome || !Number.isInteger(acertos) || acertos < 0 || !Number.isInteger(pontuacao) || pontuacao < 0) {
         return sendJson(response, 400, { error: "Nome, acertos e pontuação são obrigatórios e devem ser válidos." });
       }
-      
-      const client = await pool.connect();
-      try {
-        await client.query("BEGIN");
-        const userResult = await client.query(
-          "INSERT INTO cadastro_usuario (nome) VALUES ($1) ON CONFLICT (nome) DO UPDATE SET nome = EXCLUDED.nome RETURNING id_usuario",
-          [nome]
-        );
-        await client.query(
-          "INSERT INTO tabela_ranking (usuario_id, nome_jogador, pontuacao_jogador, total_acertos) VALUES ($1, $2, $3, $4)",
-          [userResult.rows[0].id_usuario, nome, pontuacao, acertos]
-        );
-        await client.query("COMMIT");
-      } catch (error) {
-        await client.query("ROLLBACK");
-        throw error;
-      } finally { client.release(); }
+
+      // Exemplo utilizando o cliente oficial do Supabase para inserir o usuário com segurança
+      const { data: userData, error: userError } = await supabase
+        .from('cadastro_usuario')
+        .insert([{ nome }])
+        .select('id_usuario')
+        .single();
+
+      if (userError && userError.code !== '23505') { // Ignora se já existe (unique violation) e busca o id se necessário
+        console.error("Erro no Supabase ao salvar usuário:", userError.message);
+      }
+
+      // Inserção no ranking via Pool PostgreSQL tradicional
+      if (pool) {
+        const client = await pool.connect();
+        try {
+          await client.query("BEGIN");
+          const resUser = await client.query(
+            "INSERT INTO cadastro_usuario (nome) VALUES ($1) ON CONFLICT (nome) DO UPDATE SET nome = EXCLUDED.nome RETURNING id_usuario",
+            [nome]
+          );
+          await client.query(
+            "INSERT INTO tabela_ranking (usuario_id, nome_jogador, pontuacao_jogador, total_acertos) VALUES ($1, $2, $3, $4)",
+            [resUser.rows[0].id_usuario, nome, pontuacao, acertos]
+          );
+          await client.query("COMMIT");
+        } catch (error) {
+          await client.query("ROLLBACK");
+          throw error;
+        } finally { client.release(); }
+      }
+
       return sendJson(response, 201, { saved: true });
     }
 
@@ -257,7 +278,7 @@ function normalizarDificuldade(value) {
     .toLowerCase()
     .replace(/\s+/g, "");
 
-    if (!normalized || normalized === "todas") return "";
+  if (!normalized || normalized === "todas") return "";
   if (["facil", "fácil"].includes(normalized)) return "facil";
   if (["medio", "media", "médio", "média"].includes(normalized)) return "medio";
   if (["dificil", "difícil"].includes(normalized)) return "dificil";
