@@ -1,30 +1,3 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient('https://supabase.com/dashboard/project/zwsabtozrjnpmhjiidmd/sql/83064a62-0664-4b9e-8288-0c26abbb5f47?showConnect=true&connectTab=direct', 'SUA_CHAVE_ANON_DO_SUPABASE')
-
-async function salvarUsuario(nomeDigitado) {
-  const { data, error } = await supabase
-    .from('cadastro_usuario')
-    .insert([
-      { nome: nomeDigitado } // Deve coincidir exatamente com a coluna 'nome' do SQL
-    ])
-    .select()
-
-  if (error) {
-    console.error("Erro retornado pelo Supabase:", error.message)
-    
-    // Tratativa para nome duplicado (já que a coluna é UNIQUE)
-    if (error.code === '23505') {
-      alert("Este nome já está cadastrado. Tente outro!")
-    } else {
-      alert("Erro ao cadastrar: " + error.message)
-    }
-    return
-  }
-
-  console.log("Cadastrado com sucesso no Supabase!", data)
-  alert("Cadastro realizado com sucesso!")
-}
 const http = require("node:http");
 const fs = require("node:fs");
 const { Pool } = require("pg");
@@ -34,10 +7,13 @@ const projectRoot = path.resolve(__dirname, "..");
 const maximumQuestionCount = 10;
 
 loadEnvFile();
+
+// Conexão segura com o PostgreSQL (compatível com Supabase / Vercel)
 const pool = process.env.DATABASE_URL ? new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.DATABASE_SSL === "false" ? false : { rejectUnauthorized: false }
 }) : null;
+
 const port = Number(process.env.PORT) || 3000;
 
 const server = http.createServer(async (request, response) => {
@@ -91,12 +67,15 @@ const server = http.createServer(async (request, response) => {
       let body;
       try { body = await readJsonBody(request); }
       catch (error) { return sendJson(response, error.statusCode || 400, { error: error.message }); }
+      
       const nome = typeof body?.nome_usuario === "string" ? body.nome_usuario.trim().slice(0, 50) : "";
       const acertos = Number(body?.total_acertos);
       const pontuacao = Number(body?.pontuacao_final);
+      
       if (!nome || !Number.isInteger(acertos) || acertos < 0 || !Number.isInteger(pontuacao) || pontuacao < 0) {
         return sendJson(response, 400, { error: "Nome, acertos e pontuação são obrigatórios e devem ser válidos." });
       }
+      
       const client = await pool.connect();
       try {
         await client.query("BEGIN");
@@ -278,7 +257,7 @@ function normalizarDificuldade(value) {
     .toLowerCase()
     .replace(/\s+/g, "");
 
-  if (!normalized || normalized === "todas") return "";
+    if (!normalized || normalized === "todas") return "";
   if (["facil", "fácil"].includes(normalized)) return "facil";
   if (["medio", "media", "médio", "média"].includes(normalized)) return "medio";
   if (["dificil", "difícil"].includes(normalized)) return "dificil";
