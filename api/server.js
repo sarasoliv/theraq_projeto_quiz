@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient('https://supabase.com/dashboard/project/zwsabtozrjnpmhjiidmd/sql/83064a62-0664-4b9e-8288-0c26abbb5f47?showConnect=true&connectTab=direct', 'SUA_CHAVE_ANON_DO_SUPABASE')
+const supabase = createClient('https://supabase.com/dashboard/project/zwsabtozrjnpmhjiidmd/sql/83064a62-0664-4b9e-8288-0c26abbb5f47?showConnect=true&connectTab=direct', 'RjhnQBHp7sY8CMyH')
 
 async function salvarUsuario(nomeDigitado) {
   const { data, error } = await supabase
