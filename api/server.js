@@ -34,14 +34,25 @@ const server = http.createServer(async (request, response) => {
 
     if (request.method === "GET" && requestUrl.pathname === "/api/perguntas") {
       if (!pool) return sendJson(response, 503, { error: "Configure DATABASE_URL no arquivo api/.env." });
-      const { rows } = await pool.query(`
+      const dificuldade = normalizarDificuldade(requestUrl.searchParams.get("dificuldade"));
+
+      let query = `
         SELECT q.id, q.enunciado, q.resposta_correta, q.dificuldade_nivel,
                f.referencia, o.opcao_a, o.opcao_b, o.opcao_c, o.opcao_d, o.opcao_e
         FROM questoes q
         JOIN opcao_questoes o ON o.id_opcao = q.opcao_id
         LEFT JOIN fonte f ON f.id = q.fonte_id
-        ORDER BY q.id
-      `);
+      `;
+      const params = [];
+
+      if (dificuldade) {
+        query += " WHERE lower(trim(q.dificuldade_nivel)) = lower($1)";
+        params.push(dificuldade);
+      }
+
+      query += " ORDER BY q.id";
+
+      const { rows } = await pool.query(query, params);
       return sendJson(response, 200, rows.map(q => ({
         ...q,
         alternativas: [q.opcao_a, q.opcao_b, q.opcao_c, q.opcao_d, q.opcao_e]
@@ -200,7 +211,10 @@ function serveFrontend(pathname, response) {
     "/": "index.html",
     "/index.html": "index.html",
     "/script.js": "script.js",
-    "/styles.css": "styles.css"
+    "/styles.css": "styles.css",
+    "/logo-theraq.png": "logo-theraq.png",
+    "/acertou.mp3": "acertou.mp3",
+    "/errou.mp3": "errou.mp3"
   };
   const fileName = files[pathname];
 
@@ -210,7 +224,10 @@ function serveFrontend(pathname, response) {
   const contentTypes = {
     "index.html": "text/html; charset=utf-8",
     "script.js": "text/javascript; charset=utf-8",
-    "styles.css": "text/css; charset=utf-8"
+    "styles.css": "text/css; charset=utf-8",
+    "logo-theraq.png": "image/png",
+    "acertou.mp3": "audio/mpeg",
+    "errou.mp3": "audio/mpeg"
   };
 
   fs.readFile(filePath, (error, content) => {
@@ -223,6 +240,22 @@ function serveFrontend(pathname, response) {
 function sendJson(response, statusCode, value) {
   response.writeHead(statusCode, { "Content-Type": "application/json; charset=utf-8" });
   response.end(JSON.stringify(value));
+}
+
+function normalizarDificuldade(value) {
+  if (typeof value !== "string") return "";
+  const normalized = value
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, "");
+
+  if (!normalized || normalized === "todas") return "";
+  if (["facil", "fácil"].includes(normalized)) return "facil";
+  if (["medio", "media", "médio", "média"].includes(normalized)) return "medio";
+  if (["dificil", "difícil"].includes(normalized)) return "dificil";
+  return normalized;
 }
 
 function loadEnvFile() {
