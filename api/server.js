@@ -1,3 +1,30 @@
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient('https://supabase.com/dashboard/project/zwsabtozrjnpmhjiidmd/sql/83064a62-0664-4b9e-8288-0c26abbb5f47?showConnect=true&connectTab=direct', 'SUA_CHAVE_ANON_DO_SUPABASE')
+
+async function salvarUsuario(nomeDigitado) {
+  const { data, error } = await supabase
+    .from('cadastro_usuario')
+    .insert([
+      { nome: nomeDigitado } // Deve coincidir exatamente com a coluna 'nome' do SQL
+    ])
+    .select()
+
+  if (error) {
+    console.error("Erro retornado pelo Supabase:", error.message)
+    
+    // Tratativa para nome duplicado (já que a coluna é UNIQUE)
+    if (error.code === '23505') {
+      alert("Este nome já está cadastrado. Tente outro!")
+    } else {
+      alert("Erro ao cadastrar: " + error.message)
+    }
+    return
+  }
+
+  console.log("Cadastrado com sucesso no Supabase!", data)
+  alert("Cadastro realizado com sucesso!")
+}
 const http = require("node:http");
 const fs = require("node:fs");
 const { Pool } = require("pg");
