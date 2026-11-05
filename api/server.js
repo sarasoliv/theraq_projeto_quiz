@@ -1,45 +1,12 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient('https://supabase.com/dashboard/project/zwsabtozrjnpmhjiidmd/sql/83064a62-0664-4b9e-8288-0c26abbb5f47?showConnect=true&connectTab=direct', 'RjhnQBHp7sY8CMyH')
-
-async function salvarUsuario(nomeDigitado) {
-  const { data, error } = await supabase
-    .from('cadastro_usuario')
-    .insert([
-      { nome: nomeDigitado } // Deve coincidir exatamente com a coluna 'nome' do SQL
-    ])
-    .select()
-
-  if (error) {
-    console.error("Erro retornado pelo Supabase:", error.message)
-    
-    // Tratativa para nome duplicado (já que a coluna é UNIQUE)
-    if (error.code === '23505') {
-      alert("Este nome já está cadastrado. Tente outro!")
-    } else {
-      alert("Erro ao cadastrar: " + error.message)
-    }
-    return
-  }
-
-  console.log("Cadastrado com sucesso no Supabase!", data)
-  alert("Cadastro realizado com sucesso!")
-}
 const http = require("node:http");
 const fs = require("node:fs");
 const { Pool } = require("pg");
-const { createClient } = require('@supabase/supabase-js');
 const path = require("node:path");
 
 const projectRoot = path.resolve(__dirname, "..");
 const maximumQuestionCount = 10;
 
 loadEnvFile();
-
-// Inicialização do Cliente Oficial do Supabase (para uso direto na nuvem)
-const supabaseUrl = process.env.SUPABASE_URL || 'https://zwsabtozrjnpmhjiidmd.supabase.co';
-const supabaseKey = process.env.SUPABASE_ANON_KEY || 'SUA_CHAVE_ANON_DO_SUPABASE';
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Conexão PostgreSQL (Pool) para as consultas complexas e ranking
 const pool = process.env.DATABASE_URL ? new Pool({
@@ -109,18 +76,8 @@ const server = http.createServer(async (request, response) => {
         return sendJson(response, 400, { error: "Nome, acertos e pontuação são obrigatórios e devem ser válidos." });
       }
 
-      // Exemplo utilizando o cliente oficial do Supabase para inserir o usuário com segurança
-      const { data: userData, error: userError } = await supabase
-        .from('cadastro_usuario')
-        .insert([{ nome }])
-        .select('id_usuario')
-        .single();
+      if (!pool) return sendJson(response, 503, { error: "Configure DATABASE_URL no arquivo api/.env." });
 
-      if (userError && userError.code !== '23505') { // Ignora se já existe (unique violation) e busca o id se necessário
-        console.error("Erro no Supabase ao salvar usuário:", userError.message);
-      }
-
-      // Inserção no ranking via Pool PostgreSQL tradicional
       if (pool) {
         const client = await pool.connect();
         try {
