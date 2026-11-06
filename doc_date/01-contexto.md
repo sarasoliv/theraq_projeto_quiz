@@ -8,7 +8,7 @@ Marco M1. Copiem para `entregas/01-contexto.md`.
 
 O TheraQ é um projeto que tem como objetivo ensinar, de forma dinâmica e fácil, as pessoas da área de tecnologia ou não, a partir do acidente do Therac-25, ocorrido entre os anos de 1985 e 1987, como é perigoso confiar excessivamente em softwares sem mecanismos físicos de segurança, principalmente quando se trata de uma máquina que opera em prol da saúde das pessoas.
 
-O quiz tem como funções permitir que o usuário personalize a quantidade e a dificuldade das perguntas que irá responder. Cada pergunta terá cinco opções de resposta, de A a E a princípio, sendo apenas uma delas a correta. As questões são escolhidas a dedo em fontes confiáveis e armazenadas em um Banco de Dados, juntamente com a pergunta, sua respectiva resposta e seu nível de dificuldade.
+O quiz tem como funções permitir que o usuário personalize a dificuldade das perguntas que irá responder. Cada pergunta terá cinco opções de resposta, de A a E a princípio, sendo apenas uma delas a correta. As questões são escolhidas a dedo em fontes confiáveis e armazenadas em um Banco de Dados, juntamente com a pergunta, sua respectiva resposta e seu nível de dificuldade.
 
 Também haverá um Banco de Dados destinado ao armazenamento da pontuação total de cada jogador por partida, com as pontuações separadas por nível de dificuldade. A partir desses dados, será possível gerar um ranking, organizado do jogador com maior pontuação para o jogador com menor pontuação.
 
@@ -24,7 +24,7 @@ Também haverá um Banco de Dados destinado ao armazenamento da pontuação tota
 
 | Usuário | O que faz | Acessos
 | --- | --- | --- |
-| Jogador | Responde às perguntas do quiz e personaliza a dificuldade e quantas perguntas seu quiz tem | Acesso apenas a interface do quiz para jogar |
+| Jogador | Responde às perguntas do quiz e personaliza a dificuldade que seu quiz terá| Acesso apenas a interface do quiz para jogar |
 | Desenvolvedor | Quem gerencia o servidor do quiz e faz atualizações conforme necessidade a partir de sugestões de usuários. | Acesso aos códigos por tras do quiz como o back-end e fornt-end |
 | Tester | Faz o teste de mesa virtual e reporta bugs. | Acesso a interface do quiz para jogar como um usuario comum mas tendo acesso a tabela de questoes e tabela em que mostra as respostas que os jogadores deram |
 | Analista de informações | Confere a veracidade das perguntas e respostas. | Acesso a tabela em que se é armazenado temporariamente as perguntas |
@@ -44,10 +44,10 @@ Gostaria que o quiz tivesse recursos de acessibilidade e sons para quando o usu�
 | RA03 | Ao finalizar o questionário, o sistema entrega a pontuação. | Requisito funcional |
 | RA04 | A resposta é apresentada logo após o usuário escolher sua opção à pergunta feita. | Requisito funcional |
 | RA05 | É possível selecionar o nível de dificuldade, sendo fácil, médio e difícil. | Requisito funcional |
-| RA06 | A IA do quiz gera as perguntas automaticamente a cada novo questionário aberto. | Requisito não funcional |
-| RA07 | O sistema gera no mínimo 5 perguntas a cada questionário iniciado. | Requisito não funcional |
+| RA06 | O sistema do quiz gera as perguntas automaticamente a cada novo questionário aberto. | Requisito não funcional |
+| RA07 | O sistema gera 10 perguntas a cada questionário iniciado. | Requisito não funcional |
 | RD01 | O sistema não armazena as perguntas das questões após encerrar o quiz. | Regra de negócios |
-| RD02 | A IA gera as perguntas aleatoriamente baseada em fontes específicas. | Regra de negócios |
+| RD02 | O sistema gera as perguntas aleatoriamente baseada em fontes específicas. | Regra de negócios |
 | RD03 | O sistema possui recursos de acessibilidade. | Regra de negócios |
 | RD04 | O banco de dados guarda a pontuação e o nome do usuário que a fez. | Regra de negócios |
 | RD05 | O cadastro será feito através do nome de usuário. | Regra de negócios |
